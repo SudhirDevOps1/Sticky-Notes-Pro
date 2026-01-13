@@ -1,0 +1,3729 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>📝 Sticky Notes Pro v6.0 | @SudhirDevOps1</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    <!-- html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand&family=Kalam:wght@400;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Tiro+Devanagari+Hindi:wght@400;700&family=Hind:wght@400;500;600;700&family=Mukta:wght@400;500;600;700&family=Pacifico&family=Dancing+Script:wght@400;500;600;700&family=Satisfy&family=Great+Vibes&family=Sacramento&family=Shadows+Into+Light&family=Indie+Flower&family=Architects+Daughter&family=Comic+Neue:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* ============================================
+           STICKY NOTES PRO - v6.0
+           Created by: Sudhir Kumar (@SudhirDevOps1)
+           NEW: Card Effects, JSON Paste, More Styles
+           ============================================ */
+
+      :root {
+        --bg-dark: #0a0a0f;
+        --bg-card: #12121a;
+        --bg-surface: #1a1a24;
+        --border: #2a2a3a;
+        --text: #e4e4e7;
+        --text-muted: #71717a;
+        --accent: #10b981;
+        --accent-glow: rgba(16, 185, 129, 0.3);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Inter", "Noto Sans Devanagari", sans-serif;
+        background: var(--bg-dark);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* Font Classes */
+      .font-inter {
+        font-family: "Inter", sans-serif;
+      }
+      .font-poppins {
+        font-family: "Poppins", sans-serif;
+      }
+      .font-kalam {
+        font-family: "Kalam", cursive;
+      }
+      .font-caveat {
+        font-family: "Caveat", cursive;
+      }
+      .font-patrick {
+        font-family: "Patrick Hand", cursive;
+      }
+      .font-mono {
+        font-family: "JetBrains Mono", monospace;
+      }
+      .font-hindi {
+        font-family: "Noto Sans Devanagari", "Hind", sans-serif;
+      }
+      .font-hindi-tiro {
+        font-family: "Tiro Devanagari Hindi", serif;
+      }
+      .font-mukta {
+        font-family: "Mukta", sans-serif;
+      }
+      .font-pacifico {
+        font-family: "Pacifico", cursive;
+      }
+      .font-dancing {
+        font-family: "Dancing Script", cursive;
+      }
+      .font-satisfy {
+        font-family: "Satisfy", cursive;
+      }
+      .font-vibes {
+        font-family: "Great Vibes", cursive;
+      }
+      .font-sacramento {
+        font-family: "Sacramento", cursive;
+      }
+      .font-shadows {
+        font-family: "Shadows Into Light", cursive;
+      }
+      .font-indie {
+        font-family: "Indie Flower", cursive;
+      }
+      .font-architect {
+        font-family: "Architects Daughter", cursive;
+      }
+      .font-comic {
+        font-family: "Comic Neue", cursive;
+      }
+
+      /* Animated Background */
+      .bg-pattern {
+        position: fixed;
+        inset: 0;
+        background: radial-gradient(
+            circle at 20% 50%,
+            rgba(16, 185, 129, 0.08) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(139, 92, 246, 0.08) 0%,
+            transparent 50%
+          ),
+          radial-gradient(
+            circle at 40% 80%,
+            rgba(236, 72, 153, 0.05) 0%,
+            transparent 50%
+          );
+        z-index: 0;
+        pointer-events: none;
+      }
+
+      /* ============================================
+           STICKY NOTE BASE STYLES
+           ============================================ */
+
+      .sticky-note {
+        position: relative;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: visible;
+      }
+
+      .sticky-note:hover {
+        transform: translateY(-6px) rotate(0deg) scale(1.02) !important;
+        z-index: 50;
+      }
+
+      /* ============================================
+           CARD EFFECT STYLES (15+ Effects)
+           ============================================ */
+
+      /* 1. Classic Fold */
+      .effect-fold {
+        border-radius: 3px 3px 16px 3px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1),
+          0 16px 32px rgba(0, 0, 0, 0.15), inset 0 -2px 6px rgba(0, 0, 0, 0.05);
+      }
+      .effect-fold::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 20px;
+        right: 20px;
+        height: 20px;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0.12) 0%,
+          transparent 100%
+        );
+        border-radius: 3px 3px 0 0;
+        z-index: 1;
+      }
+      .effect-fold .corner-fold {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        border-style: solid;
+        border-width: 0 0 32px 32px;
+        border-color: transparent transparent var(--bg-dark) transparent;
+        z-index: 5;
+      }
+      .effect-fold .corner-fold::before {
+        content: "";
+        position: absolute;
+        bottom: -32px;
+        right: 0;
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(
+          135deg,
+          transparent 50%,
+          rgba(0, 0, 0, 0.15) 50%
+        );
+      }
+
+      /* 2. Curved/Lifted */
+      .effect-curved {
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12),
+          0 8px 24px rgba(0, 0, 0, 0.15), 0 30px 60px -30px rgba(0, 0, 0, 0.3);
+      }
+      .effect-curved::before {
+        content: "";
+        position: absolute;
+        bottom: 10px;
+        left: 15px;
+        right: 15px;
+        height: 30px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 50%;
+        filter: blur(15px);
+        z-index: -1;
+        transform: rotateX(60deg);
+      }
+
+      /* 3. Torn/Rough Edge */
+      .effect-torn {
+        border-radius: 4px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        clip-path: polygon(
+          0% 2%,
+          3% 0%,
+          7% 2%,
+          11% 0%,
+          15% 1%,
+          19% 0%,
+          23% 2%,
+          27% 0%,
+          31% 1%,
+          35% 0%,
+          39% 2%,
+          43% 0%,
+          47% 1%,
+          51% 0%,
+          55% 2%,
+          59% 0%,
+          63% 1%,
+          67% 0%,
+          71% 2%,
+          75% 0%,
+          79% 1%,
+          83% 0%,
+          87% 2%,
+          91% 0%,
+          95% 1%,
+          100% 0%,
+          100% 98%,
+          97% 100%,
+          93% 98%,
+          89% 100%,
+          85% 99%,
+          81% 100%,
+          77% 98%,
+          73% 100%,
+          69% 99%,
+          65% 100%,
+          61% 98%,
+          57% 100%,
+          53% 99%,
+          49% 100%,
+          45% 98%,
+          41% 100%,
+          37% 99%,
+          33% 100%,
+          29% 98%,
+          25% 100%,
+          21% 99%,
+          17% 100%,
+          13% 98%,
+          9% 100%,
+          5% 99%,
+          0% 100%
+        );
+      }
+
+      /* 4. Stacked/Copy Effect */
+      .effect-stacked {
+        border-radius: 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+      .effect-stacked::before,
+      .effect-stacked::after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: inherit;
+        border-radius: 4px;
+        z-index: -1;
+      }
+      .effect-stacked::before {
+        top: 4px;
+        left: 4px;
+        opacity: 0.6;
+      }
+      .effect-stacked::after {
+        top: 8px;
+        left: 8px;
+        opacity: 0.3;
+      }
+
+      /* 5. Notebook/Lined */
+      .effect-notebook {
+        border-radius: 0 8px 8px 0;
+        border-left: 4px solid #ef4444;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        background-image: repeating-linear-gradient(
+          transparent,
+          transparent 27px,
+          rgba(0, 0, 0, 0.05) 27px,
+          rgba(0, 0, 0, 0.05) 28px
+        );
+      }
+      .effect-notebook::before {
+        content: "";
+        position: absolute;
+        left: 30px;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: rgba(239, 68, 68, 0.3);
+      }
+
+      /* 6. Polaroid */
+      .effect-polaroid {
+        border-radius: 4px;
+        padding-bottom: 50px !important;
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+        border: 12px solid white;
+        border-bottom-width: 50px;
+      }
+
+      /* 7. Postcard */
+      .effect-postcard {
+        border-radius: 4px;
+        border: 8px solid white;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+      .effect-postcard::before {
+        content: "✉";
+        position: absolute;
+        top: -4px;
+        right: 10px;
+        font-size: 20px;
+        opacity: 0.3;
+      }
+
+      /* 8. 3D Lifted */
+      .effect-3d {
+        border-radius: 8px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.08), 0 2px 2px rgba(0, 0, 0, 0.08),
+          0 4px 4px rgba(0, 0, 0, 0.08), 0 8px 8px rgba(0, 0, 0, 0.08),
+          0 16px 16px rgba(0, 0, 0, 0.08);
+        transform-style: preserve-3d;
+      }
+
+      /* 9. Tape Edges */
+      .effect-taped {
+        border-radius: 2px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      .effect-taped::before,
+      .effect-taped::after {
+        content: "";
+        position: absolute;
+        width: 60px;
+        height: 24px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.5) 0%,
+          rgba(255, 255, 255, 0.2) 100%
+        );
+        z-index: 10;
+      }
+      .effect-taped::before {
+        top: -10px;
+        left: 20px;
+        transform: rotate(-8deg);
+      }
+      .effect-taped::after {
+        top: -10px;
+        right: 20px;
+        transform: rotate(8deg);
+      }
+
+      /* 10. Rough Paper */
+      .effect-rough {
+        border-radius: 3px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        filter: url(#roughPaper);
+      }
+
+      /* 11. Ticket/Perforated */
+      .effect-ticket {
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        background-image: radial-gradient(
+            circle at 0 50%,
+            transparent 8px,
+            currentColor 8px,
+            currentColor 10px,
+            transparent 10px
+          ),
+          radial-gradient(
+            circle at 100% 50%,
+            transparent 8px,
+            currentColor 8px,
+            currentColor 10px,
+            transparent 10px
+          );
+        background-size: 100% 20px;
+        background-position: 0 0;
+        background-repeat: repeat-y;
+      }
+
+      /* 12. Stamp */
+      .effect-stamp {
+        border-radius: 4px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        border: 3px dashed currentColor;
+        padding: 8px !important;
+      }
+      .effect-stamp::before {
+        content: "";
+        position: absolute;
+        inset: 6px;
+        border: 2px solid currentColor;
+        border-radius: 2px;
+        opacity: 0.3;
+      }
+
+      /* 13. Pinned Cork */
+      .effect-cork {
+        border-radius: 4px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+      }
+      .effect-cork::before {
+        content: "";
+        position: absolute;
+        top: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 24px;
+        height: 24px;
+        background: radial-gradient(circle at 35% 35%, #ef4444, #b91c1c);
+        border-radius: 50%;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3),
+          inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+        z-index: 10;
+      }
+      .effect-cork::after {
+        content: "";
+        position: absolute;
+        top: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 6px;
+        background: #666;
+        z-index: 9;
+      }
+
+      /* 14. Washi Tape Top */
+      .effect-washi {
+        border-radius: 4px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
+      .effect-washi::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 0;
+        right: 0;
+        height: 28px;
+        background: repeating-linear-gradient(
+          90deg,
+          rgba(236, 72, 153, 0.7) 0px,
+          rgba(236, 72, 153, 0.7) 10px,
+          rgba(251, 207, 232, 0.7) 10px,
+          rgba(251, 207, 232, 0.7) 20px
+        );
+        z-index: 10;
+      }
+
+      /* 15. Gradient Border */
+      .effect-gradient {
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        border: 3px solid transparent;
+        background-clip: padding-box;
+        position: relative;
+      }
+      .effect-gradient::before {
+        content: "";
+        position: absolute;
+        inset: -3px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #f97316, #ec4899, #8b5cf6, #06b6d4);
+        z-index: -1;
+      }
+
+      /* 16. Minimal Clean */
+      .effect-minimal {
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+      }
+
+      /* 17. Neon Glow */
+      .effect-neon {
+        border-radius: 8px;
+        box-shadow: 0 0 5px currentColor, 0 0 20px currentColor,
+          0 0 40px currentColor;
+        border: 2px solid currentColor;
+      }
+
+      /* 18. Glass Morphism */
+      .effect-glass {
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      /* ============================================
+           ATTACHMENT STYLES
+           ============================================ */
+
+      .sticky-tape {
+        position: absolute;
+        top: -14px;
+        left: 50%;
+        transform: translateX(-50%) rotate(-2deg);
+        width: 80px;
+        height: 30px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.5) 0%,
+          rgba(255, 255, 255, 0.25) 100%
+        );
+        border-radius: 3px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+      }
+
+      .sticky-tape-corner {
+        position: absolute;
+        top: -10px;
+        left: 10px;
+        width: 50px;
+        height: 22px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.5) 0%,
+          rgba(255, 255, 255, 0.25) 100%
+        );
+        transform: rotate(-35deg);
+        border-radius: 2px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+        z-index: 10;
+      }
+
+      .sticky-tape-double {
+        position: absolute;
+        top: -12px;
+        left: 20%;
+        right: 20%;
+        height: 26px;
+        z-index: 10;
+      }
+      .sticky-tape-double::before,
+      .sticky-tape-double::after {
+        content: "";
+        position: absolute;
+        width: 60px;
+        height: 26px;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.45) 0%,
+          rgba(255, 255, 255, 0.2) 100%
+        );
+        border-radius: 2px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+      }
+      .sticky-tape-double::before {
+        left: 0;
+        transform: rotate(-5deg);
+      }
+      .sticky-tape-double::after {
+        right: 0;
+        transform: rotate(5deg);
+      }
+
+      .sticky-pin {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 22px;
+        height: 22px;
+        background: radial-gradient(circle at 35% 35%, #ff6b6b, #c0392b);
+        border-radius: 50%;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35),
+          inset 0 -2px 4px rgba(0, 0, 0, 0.25);
+        z-index: 10;
+      }
+      .sticky-pin::after {
+        content: "";
+        position: absolute;
+        top: 4px;
+        left: 5px;
+        width: 6px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+      }
+
+      .sticky-pin-gold {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 22px;
+        height: 22px;
+        background: radial-gradient(circle at 35% 35%, #ffd700, #b8860b);
+        border-radius: 50%;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35),
+          inset 0 -2px 4px rgba(0, 0, 0, 0.25);
+        z-index: 10;
+      }
+      .sticky-pin-gold::after {
+        content: "";
+        position: absolute;
+        top: 4px;
+        left: 5px;
+        width: 6px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+      }
+
+      .sticky-pin-blue {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 22px;
+        height: 22px;
+        background: radial-gradient(circle at 35% 35%, #3b82f6, #1d4ed8);
+        border-radius: 50%;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35),
+          inset 0 -2px 4px rgba(0, 0, 0, 0.25);
+        z-index: 10;
+      }
+      .sticky-pin-blue::after {
+        content: "";
+        position: absolute;
+        top: 4px;
+        left: 5px;
+        width: 6px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+      }
+
+      .sticky-pin-green {
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 22px;
+        height: 22px;
+        background: radial-gradient(circle at 35% 35%, #22c55e, #15803d);
+        border-radius: 50%;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.35),
+          inset 0 -2px 4px rgba(0, 0, 0, 0.25);
+        z-index: 10;
+      }
+      .sticky-pin-green::after {
+        content: "";
+        position: absolute;
+        top: 4px;
+        left: 5px;
+        width: 6px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+      }
+
+      .sticky-clip {
+        position: absolute;
+        top: -8px;
+        right: 20px;
+        width: 28px;
+        height: 42px;
+        border: 3px solid #888;
+        border-radius: 0 0 14px 14px;
+        border-top: none;
+        z-index: 10;
+        background: linear-gradient(90deg, #c0c0c0, #f5f5f5, #c0c0c0);
+      }
+
+      .sticky-clip-gold {
+        position: absolute;
+        top: -8px;
+        right: 20px;
+        width: 28px;
+        height: 42px;
+        border: 3px solid #b8860b;
+        border-radius: 0 0 14px 14px;
+        border-top: none;
+        z-index: 10;
+        background: linear-gradient(90deg, #daa520, #ffd700, #daa520);
+      }
+
+      .sticky-clip-rose {
+        position: absolute;
+        top: -8px;
+        right: 20px;
+        width: 28px;
+        height: 42px;
+        border: 3px solid #db2777;
+        border-radius: 0 0 14px 14px;
+        border-top: none;
+        z-index: 10;
+        background: linear-gradient(90deg, #ec4899, #f472b6, #ec4899);
+      }
+
+      .sticky-staple {
+        position: absolute;
+        top: 8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 6px;
+        background: linear-gradient(180deg, #888 0%, #666 100%);
+        border-radius: 1px;
+        z-index: 10;
+      }
+
+      .sticky-magnet {
+        position: absolute;
+        top: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 30px;
+        height: 12px;
+        background: linear-gradient(180deg, #333 0%, #666 50%, #333 100%);
+        border-radius: 3px;
+        z-index: 10;
+      }
+
+      .sticky-binder {
+        position: absolute;
+        top: 20px;
+        left: -8px;
+        width: 16px;
+        height: 40px;
+        background: linear-gradient(90deg, #1e293b, #334155, #1e293b);
+        border-radius: 3px;
+        z-index: 10;
+      }
+      .sticky-binder::before,
+      .sticky-binder::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        width: 8px;
+        height: 8px;
+        background: #0f172a;
+        border-radius: 50%;
+      }
+      .sticky-binder::before {
+        top: 6px;
+      }
+      .sticky-binder::after {
+        bottom: 6px;
+      }
+
+      .sticky-string {
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 2px;
+        height: 20px;
+        background: #8b5cf6;
+        z-index: 10;
+      }
+      .sticky-string::after {
+        content: "";
+        position: absolute;
+        top: -8px;
+        left: -7px;
+        width: 16px;
+        height: 16px;
+        border: 2px solid #8b5cf6;
+        border-radius: 50%;
+        background: transparent;
+      }
+
+      /* ============================================
+           MODAL STYLES
+           ============================================ */
+
+      .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .modal.active {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+      }
+
+      .modal-content {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        width: 100%;
+        max-width: 900px;
+        margin: 20px auto;
+        position: relative;
+        animation: modalSlide 0.3s ease;
+      }
+
+      @keyframes modalSlide {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-header {
+        background: var(--bg-surface);
+        padding: 14px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border-bottom: 1px solid var(--border);
+        border-radius: 16px 16px 0 0;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .modal-body {
+        padding: 20px;
+        max-height: calc(100vh - 180px);
+        overflow-y: auto;
+      }
+
+      .modal-footer {
+        padding: 16px 20px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        background: var(--bg-surface);
+        border-radius: 0 0 16px 16px;
+        position: sticky;
+        bottom: 0;
+      }
+
+      /* Form Elements */
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-bottom: 6px;
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 12px;
+      }
+
+      .dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        flex-shrink: 0;
+      }
+      .dot-red {
+        background: #ef4444;
+      }
+      .dot-yellow {
+        background: #eab308;
+      }
+      .dot-green {
+        background: #22c55e;
+      }
+
+      .btn {
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 1px solid var(--border);
+        background: var(--bg-surface);
+        color: var(--text);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        white-space: nowrap;
+      }
+
+      .btn:hover {
+        background: var(--border);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .btn-sm {
+        padding: 6px 12px;
+        font-size: 12px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: none;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(135deg, #059669, #047857);
+        box-shadow: 0 0 20px var(--accent-glow);
+        color: white;
+      }
+
+      .input-field {
+        width: 100%;
+        padding: 10px 14px;
+        background: var(--bg-dark);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        color: var(--text);
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+
+      .input-field:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+      }
+
+      .color-input {
+        width: 100%;
+        height: 42px;
+        padding: 4px;
+        background: var(--bg-dark);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        cursor: pointer;
+      }
+
+      /* ============================================
+           GRIDS
+           ============================================ */
+
+      .preset-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(36px, 1fr));
+        gap: 6px;
+      }
+
+      .preset-option {
+        aspect-ratio: 1;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s;
+        border: 2px solid transparent;
+        position: relative;
+      }
+
+      .preset-option:hover {
+        transform: scale(1.1);
+        z-index: 10;
+      }
+
+      .preset-option.selected {
+        border-color: var(--accent);
+        box-shadow: 0 0 12px var(--accent-glow);
+      }
+
+      .preset-option.selected::after {
+        content: "✓";
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: bold;
+        color: inherit;
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 4px;
+      }
+
+      .effect-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+        gap: 8px;
+      }
+
+      .effect-option {
+        padding: 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.2s;
+        background: var(--bg-surface);
+        border: 2px solid var(--border);
+      }
+
+      .effect-option:hover {
+        border-color: var(--accent);
+      }
+
+      .effect-option.selected {
+        border-color: var(--accent);
+        background: rgba(16, 185, 129, 0.15);
+      }
+
+      .effect-option .emoji {
+        font-size: 18px;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .effect-option .label {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+
+      .attach-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(65px, 1fr));
+        gap: 6px;
+      }
+
+      .attach-option {
+        padding: 8px 4px;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        transition: all 0.2s;
+        background: var(--bg-surface);
+        border: 2px solid var(--border);
+      }
+
+      .attach-option:hover {
+        border-color: var(--accent);
+      }
+
+      .attach-option.selected {
+        border-color: var(--accent);
+        background: rgba(16, 185, 129, 0.15);
+      }
+
+      .attach-option .emoji {
+        font-size: 16px;
+        display: block;
+        margin-bottom: 2px;
+      }
+      .attach-option .label {
+        font-size: 9px;
+        color: var(--text-muted);
+      }
+
+      /* Card Presets */
+      .preset-yellow {
+        background: linear-gradient(
+          135deg,
+          #fef9c3 0%,
+          #fef08a 50%,
+          #fde047 100%
+        );
+        color: #422006;
+      }
+      .preset-pink {
+        background: linear-gradient(
+          135deg,
+          #fce7f3 0%,
+          #fbcfe8 50%,
+          #f9a8d4 100%
+        );
+        color: #500724;
+      }
+      .preset-blue {
+        background: linear-gradient(
+          135deg,
+          #dbeafe 0%,
+          #bfdbfe 50%,
+          #93c5fd 100%
+        );
+        color: #1e3a5f;
+      }
+      .preset-green {
+        background: linear-gradient(
+          135deg,
+          #d1fae5 0%,
+          #a7f3d0 50%,
+          #6ee7b7 100%
+        );
+        color: #064e3b;
+      }
+      .preset-purple {
+        background: linear-gradient(
+          135deg,
+          #ede9fe 0%,
+          #ddd6fe 50%,
+          #c4b5fd 100%
+        );
+        color: #3b0764;
+      }
+      .preset-orange {
+        background: linear-gradient(
+          135deg,
+          #ffedd5 0%,
+          #fed7aa 50%,
+          #fdba74 100%
+        );
+        color: #431407;
+      }
+      .preset-cyan {
+        background: linear-gradient(
+          135deg,
+          #cffafe 0%,
+          #a5f3fc 50%,
+          #67e8f9 100%
+        );
+        color: #134e4a;
+      }
+      .preset-rose {
+        background: linear-gradient(
+          135deg,
+          #ffe4e6 0%,
+          #fecdd3 50%,
+          #fda4af 100%
+        );
+        color: #4c0519;
+      }
+      .preset-lime {
+        background: linear-gradient(
+          135deg,
+          #ecfccb 0%,
+          #d9f99d 50%,
+          #bef264 100%
+        );
+        color: #1a2e05;
+      }
+      .preset-amber {
+        background: linear-gradient(
+          135deg,
+          #fef3c7 0%,
+          #fde68a 50%,
+          #fbbf24 100%
+        );
+        color: #451a03;
+      }
+      .preset-teal {
+        background: linear-gradient(
+          135deg,
+          #ccfbf1 0%,
+          #99f6e4 50%,
+          #5eead4 100%
+        );
+        color: #042f2e;
+      }
+      .preset-indigo {
+        background: linear-gradient(
+          135deg,
+          #e0e7ff 0%,
+          #c7d2fe 50%,
+          #a5b4fc 100%
+        );
+        color: #1e1b4b;
+      }
+      .preset-fuchsia {
+        background: linear-gradient(
+          135deg,
+          #fae8ff 0%,
+          #f5d0fe 50%,
+          #e879f9 100%
+        );
+        color: #4a044e;
+      }
+      .preset-sky {
+        background: linear-gradient(
+          135deg,
+          #e0f2fe 0%,
+          #bae6fd 50%,
+          #7dd3fc 100%
+        );
+        color: #082f49;
+      }
+      .preset-emerald {
+        background: linear-gradient(
+          135deg,
+          #d1fae5 0%,
+          #a7f3d0 50%,
+          #34d399 100%
+        );
+        color: #022c22;
+      }
+      .preset-violet {
+        background: linear-gradient(
+          135deg,
+          #ede9fe 0%,
+          #ddd6fe 50%,
+          #a78bfa 100%
+        );
+        color: #2e1065;
+      }
+      .preset-dark {
+        background: linear-gradient(
+          135deg,
+          #27272a 0%,
+          #18181b 50%,
+          #09090b 100%
+        );
+        color: #e4e4e7;
+      }
+      .preset-neon {
+        background: linear-gradient(
+          135deg,
+          #0f172a 0%,
+          #1e1b4b 50%,
+          #312e81 100%
+        );
+        color: #a5f3fc;
+        border: 1px solid #06b6d4;
+      }
+      .preset-glass {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+      .preset-sunset {
+        background: linear-gradient(
+          135deg,
+          #fef3c7 0%,
+          #fda4af 50%,
+          #c084fc 100%
+        );
+        color: #451a03;
+      }
+      .preset-ocean {
+        background: linear-gradient(
+          135deg,
+          #a5f3fc 0%,
+          #7dd3fc 50%,
+          #38bdf8 100%
+        );
+        color: #0c4a6e;
+      }
+      .preset-forest {
+        background: linear-gradient(
+          135deg,
+          #bbf7d0 0%,
+          #86efac 50%,
+          #4ade80 100%
+        );
+        color: #14532d;
+      }
+      .preset-lavender {
+        background: linear-gradient(
+          135deg,
+          #e9d5ff 0%,
+          #d8b4fe 50%,
+          #c084fc 100%
+        );
+        color: #581c87;
+      }
+      .preset-peach {
+        background: linear-gradient(
+          135deg,
+          #fed7aa 0%,
+          #fdba74 50%,
+          #fb923c 100%
+        );
+        color: #7c2d12;
+      }
+      .preset-mint {
+        background: linear-gradient(
+          135deg,
+          #a7f3d0 0%,
+          #6ee7b7 50%,
+          #34d399 100%
+        );
+        color: #064e3b;
+      }
+      .preset-cream {
+        background: linear-gradient(
+          135deg,
+          #fef3e2 0%,
+          #fde8c7 50%,
+          #fcd9a8 100%
+        );
+        color: #78350f;
+      }
+      .preset-slate {
+        background: linear-gradient(
+          135deg,
+          #e2e8f0 0%,
+          #cbd5e1 50%,
+          #94a3b8 100%
+        );
+        color: #1e293b;
+      }
+      .preset-red {
+        background: linear-gradient(
+          135deg,
+          #fee2e2 0%,
+          #fecaca 50%,
+          #fca5a5 100%
+        );
+        color: #7f1d1d;
+      }
+      .preset-gold {
+        background: linear-gradient(
+          135deg,
+          #fef3c7 0%,
+          #fcd34d 50%,
+          #f59e0b 100%
+        );
+        color: #78350f;
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--bg-surface);
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        padding: 12px 20px;
+        border-radius: 10px;
+        font-size: 14px;
+        z-index: 2000;
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s;
+      }
+
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      /* Loading */
+      .loader-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.9);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        gap: 16px;
+        z-index: 3000;
+      }
+
+      .loader-overlay.active {
+        display: flex;
+      }
+
+      .loader {
+        width: 48px;
+        height: 48px;
+        border: 3px solid var(--border);
+        border-top-color: var(--accent);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Terminal Box */
+      .terminal-box {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .terminal-header {
+        background: var(--bg-surface);
+        padding: 10px 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      /* Stats */
+      .stat-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #10b981, #06b6d4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      /* Download Area */
+      #downloadArea {
+        position: fixed;
+        left: -9999px;
+        top: 0;
+        z-index: -1;
+      }
+
+      /* Tabs */
+      .tab-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .tab-btn:hover {
+        color: var(--text);
+      }
+      .tab-btn.active {
+        color: var(--accent);
+        border-bottom-color: var(--accent);
+      }
+      .tab-content {
+        display: none;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      /* JSON Editor */
+      .json-editor {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        line-height: 1.5;
+        background: #0d1117;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px;
+        color: #e6edf3;
+        resize: vertical;
+        min-height: 200px;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .modal-body {
+          max-height: calc(100vh - 160px);
+        }
+        .form-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .btn {
+          padding: 8px 12px;
+          font-size: 11px;
+        }
+        .preset-grid {
+          grid-template-columns: repeat(8, 1fr);
+        }
+        .effect-grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .attach-grid {
+          grid-template-columns: repeat(5, 1fr);
+        }
+        .stat-number {
+          font-size: 1.25rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .modal {
+          padding: 10px;
+        }
+        .modal-content {
+          margin: 10px auto;
+        }
+        .modal-body {
+          padding: 14px;
+        }
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+        .preset-grid {
+          grid-template-columns: repeat(6, 1fr);
+        }
+        .effect-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .attach-grid {
+          grid-template-columns: repeat(4, 1fr);
+        }
+      }
+
+      /* Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg-dark);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--text-muted);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-pattern"></div>
+
+    <!-- SVG Filters -->
+    <svg style="position: absolute; width: 0; height: 0">
+      <filter id="roughPaper">
+        <feTurbulence
+          type="fractalNoise"
+          baseFrequency="0.04"
+          numOctaves="5"
+          result="noise"
+        />
+        <feDiffuseLighting in="noise" lighting-color="white" surfaceScale="2">
+          <feDistantLight azimuth="45" elevation="60" />
+        </feDiffuseLighting>
+      </filter>
+    </svg>
+
+    <!-- HEADER -->
+    <header
+      class="sticky top-0 z-50 backdrop-blur-xl bg-[#0a0a0f]/90 border-b border-[#2a2a3a]"
+    >
+      <div class="max-w-7xl mx-auto px-4 py-3">
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-cyan-500 flex items-center justify-center text-xl shadow-lg shadow-emerald-500/20"
+              >
+                📝
+              </div>
+              <div>
+                <h1
+                  class="text-lg font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent"
+                >
+                  Sticky Notes Pro
+                </h1>
+                <p class="text-xs text-zinc-500">
+                  v6.0 | Card Effects & JSON Import
+                </p>
+              </div>
+            </div>
+
+            <div
+              class="flex items-center gap-3 px-3 py-2 rounded-xl bg-gradient-to-r from-violet-500/10 to-fuchsia-500/10 border border-violet-500/20"
+            >
+              <div
+                class="w-8 h-8 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center font-bold text-white text-sm shadow-lg"
+              >
+                SK
+              </div>
+              <div class="hidden sm:block">
+                <p class="font-semibold text-white text-sm">Sudhir Kumar</p>
+                <p class="text-xs text-cyan-400">@SudhirDevOps1</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-2">
+            <button onclick="openCreateModal()" class="btn btn-primary btn-sm">
+              ➕ Create
+            </button>
+            <button onclick="openJSONModal()" class="btn btn-sm">
+              📋 JSON
+            </button>
+            <button onclick="openPresetsModal()" class="btn btn-sm">
+              🎨 Presets
+            </button>
+            <button onclick="downloadAllCards()" class="btn btn-sm">
+              📥 All
+            </button>
+            <button onclick="downloadFullPage()" class="btn btn-sm">
+              🖼️ Page
+            </button>
+            <button onclick="openSettingsModal()" class="btn btn-sm">
+              ⚙️ Settings
+            </button>
+            <button onclick="exportData()" class="btn btn-sm">💾 Export</button>
+            <label class="btn btn-sm cursor-pointer">
+              📂 Import
+              <input
+                type="file"
+                accept=".json"
+                onchange="importData(event)"
+                class="hidden"
+              />
+            </label>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-4 py-6 relative z-10">
+      <!-- Stats -->
+      <section class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div class="terminal-box p-3 text-center">
+          <div class="stat-number" id="statCards">0</div>
+          <div class="text-xs text-zinc-500">Notes</div>
+        </div>
+        <div class="terminal-box p-3 text-center">
+          <div class="stat-number" id="statWords">0</div>
+          <div class="text-xs text-zinc-500">Words</div>
+        </div>
+        <div class="terminal-box p-3 text-center">
+          <div class="stat-number" id="statChars">0</div>
+          <div class="text-xs text-zinc-500">Chars</div>
+        </div>
+        <div class="terminal-box p-3 text-center">
+          <div class="stat-number" id="statQuality">3x</div>
+          <div class="text-xs text-zinc-500">Quality</div>
+        </div>
+      </section>
+
+      <!-- Input Section -->
+      <section class="mb-6">
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+            <span class="ml-3 text-sm text-zinc-400 flex-1">📝 Text Input</span>
+            <button onclick="loadExample()" class="btn btn-sm">
+              📄 Example
+            </button>
+            <button onclick="clearAll()" class="btn btn-sm text-red-400">
+              🗑️ Clear
+            </button>
+          </div>
+
+          <div class="p-4">
+            <textarea
+              id="inputText"
+              class="input-field h-32 resize-y font-mono text-sm"
+              placeholder="📝 Type or paste your notes here... Or click '📋 JSON' to paste JSON directly!"
+              oninput="debounceRender()"
+            ></textarea>
+
+            <div class="flex flex-wrap gap-2 mt-3">
+              <span class="text-xs text-zinc-500">Quick:</span>
+              <button
+                onclick="insertTemplate('day')"
+                class="px-2 py-1 rounded-full text-xs bg-orange-500/20 text-orange-400 hover:bg-orange-500/30"
+              >
+                📅 Day
+              </button>
+              <button
+                onclick="insertTemplate('law')"
+                class="px-2 py-1 rounded-full text-xs bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
+              >
+                ⚖️ Law
+              </button>
+              <button
+                onclick="insertTemplate('meaning')"
+                class="px-2 py-1 rounded-full text-xs bg-blue-500/20 text-blue-400 hover:bg-blue-500/30"
+              >
+                💡 Meaning
+              </button>
+              <button
+                onclick="insertTemplate('example')"
+                class="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-400 hover:bg-green-500/30"
+              >
+                📌 Example
+              </button>
+              <button
+                onclick="insertTemplate('impact')"
+                class="px-2 py-1 rounded-full text-xs bg-pink-500/20 text-pink-400 hover:bg-pink-500/30"
+              >
+                ✨ Impact
+              </button>
+              <button
+                onclick="insertTemplate('takeaway')"
+                class="px-2 py-1 rounded-full text-xs bg-purple-500/20 text-purple-400 hover:bg-purple-500/30"
+              >
+                🎯 Takeaway
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Cards Display -->
+      <section class="mb-6">
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+            <span class="ml-3 text-sm text-zinc-400 flex-1"
+              >📌 Sticky Notes</span
+            >
+            <span
+              id="cardCountBadge"
+              class="text-xs px-2 py-1 rounded-full bg-emerald-500/20 text-emerald-400"
+              >0 notes</span
+            >
+          </div>
+
+          <div class="p-6" id="cardsWrapper">
+            <div
+              id="cardsContainer"
+              class="grid grid-cols-1 md:grid-cols-2 gap-8"
+            >
+              <div class="col-span-full text-center py-16">
+                <div class="text-6xl mb-4 opacity-40">📝</div>
+                <p class="text-zinc-500">No notes yet...</p>
+                <p class="text-zinc-600 text-sm mt-2">
+                  Type above, click "➕ Create", or "📋 JSON"
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Activity Log -->
+      <section>
+        <div class="terminal-box">
+          <div class="terminal-header">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+            <span class="ml-3 text-sm text-zinc-400">📜 Activity Log</span>
+          </div>
+          <div
+            id="activityLog"
+            class="p-4 text-xs max-h-32 overflow-auto space-y-1"
+          >
+            <div class="text-emerald-400">
+              [READY] System initialized - v6.0
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- CREATE NOTE MODAL -->
+    <div id="createModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+          <span class="ml-3 text-sm text-zinc-400 flex-1"
+            >➕ Create Sticky Note</span
+          >
+          <button
+            onclick="closeModal('createModal')"
+            class="text-zinc-400 hover:text-white text-2xl leading-none"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div class="modal-body space-y-4">
+          <!-- Tabs -->
+          <div class="flex border-b border-[#2a2a3a] overflow-x-auto">
+            <button class="tab-btn active" onclick="switchTab('style')">
+              🎨 Style
+            </button>
+            <button class="tab-btn" onclick="switchTab('effects')">
+              ✨ Effects
+            </button>
+            <button class="tab-btn" onclick="switchTab('content')">
+              📝 Content
+            </button>
+            <button class="tab-btn" onclick="switchTab('advanced')">
+              ⚙️ Advanced
+            </button>
+            <button class="tab-btn" onclick="switchTab('preview')">
+              👁️ Preview
+            </button>
+          </div>
+
+          <!-- Style Tab -->
+          <div id="tab-style" class="tab-content active">
+            <div class="form-group">
+              <label class="form-label">🎨 Color Preset (28 options)</label>
+              <div class="preset-grid" id="presetSelector"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">📎 Attachment Style (14 options)</label>
+              <div class="attach-grid" id="attachSelector"></div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">🎯 Custom Text Color</label>
+              <div class="form-row">
+                <div class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    id="customColorCheck"
+                    class="accent-emerald-500"
+                    onchange="toggleCustomColor()"
+                  />
+                  <label for="customColorCheck" class="text-sm text-zinc-400"
+                    >Use custom</label
+                  >
+                </div>
+                <input
+                  type="color"
+                  id="customTextColor"
+                  class="color-input"
+                  value="#000000"
+                  disabled
+                  onchange="updatePreview()"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Effects Tab -->
+          <div id="tab-effects" class="tab-content">
+            <div class="form-group">
+              <label class="form-label"
+                >✨ Card Effect Style (18 effects)</label
+              >
+              <div class="effect-grid" id="effectSelector"></div>
+            </div>
+          </div>
+
+          <!-- Content Tab -->
+          <div id="tab-content" class="tab-content">
+            <div class="form-group">
+              <label class="form-label">📁 Note Type</label>
+              <select
+                id="noteType"
+                class="input-field"
+                onchange="updatePreview()"
+              >
+                <option value="note">📝 General Note</option>
+                <option value="law">⚖️ Law / Rule</option>
+                <option value="meaning">💡 Meaning / Definition</option>
+                <option value="example">📌 Example / Case</option>
+                <option value="impact">✨ Impact / Effect</option>
+                <option value="takeaway">🎯 Takeaway / Summary</option>
+                <option value="quote">💬 Quote</option>
+                <option value="tip">💡 Tip / Hack</option>
+                <option value="warning">⚠️ Warning</option>
+                <option value="idea">💭 Idea</option>
+                <option value="question">❓ Question</option>
+                <option value="answer">✅ Answer</option>
+                <option value="reminder">🔔 Reminder</option>
+                <option value="goal">🎯 Goal</option>
+                <option value="task">✔️ Task</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">📌 Title</label>
+              <input
+                type="text"
+                id="noteTitle"
+                class="input-field"
+                placeholder="Enter note title..."
+                oninput="updatePreview()"
+              />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label"
+                >📝 Content (supports Hindi & emojis)</label
+              >
+              <textarea
+                id="noteContent"
+                class="input-field h-20 resize-y"
+                placeholder="Write your note content... आप हिंदी में भी लिख सकते हैं 🎉"
+                oninput="updatePreview()"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">📋 Bullet Points (one per line)</label>
+              <textarea
+                id="noteBullets"
+                class="input-field h-16 resize-y"
+                placeholder="- Point 1&#10;- Point 2&#10;- Point 3"
+                oninput="updatePreview()"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Advanced Tab -->
+          <div id="tab-advanced" class="tab-content">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">✍️ Font Style</label>
+                <select
+                  id="noteFont"
+                  class="input-field"
+                  onchange="updatePreview()"
+                >
+                  <optgroup label="Standard">
+                    <option value="inter">Inter</option>
+                    <option value="poppins">Poppins</option>
+                    <option value="mono">JetBrains Mono</option>
+                  </optgroup>
+                  <optgroup label="Hindi / Devanagari">
+                    <option value="hindi">Noto Sans Devanagari</option>
+                    <option value="hindi-tiro">Tiro Devanagari Hindi</option>
+                    <option value="mukta">Mukta</option>
+                  </optgroup>
+                  <optgroup label="Handwriting">
+                    <option value="kalam">Kalam</option>
+                    <option value="caveat">Caveat</option>
+                    <option value="patrick">Patrick Hand</option>
+                    <option value="shadows">Shadows Into Light</option>
+                    <option value="indie">Indie Flower</option>
+                    <option value="architect">Architects Daughter</option>
+                    <option value="comic">Comic Neue</option>
+                  </optgroup>
+                  <optgroup label="Decorative">
+                    <option value="pacifico">Pacifico</option>
+                    <option value="dancing">Dancing Script</option>
+                    <option value="satisfy">Satisfy</option>
+                    <option value="vibes">Great Vibes</option>
+                    <option value="sacramento">Sacramento</option>
+                  </optgroup>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">📐 Font Size</label>
+                <select
+                  id="noteFontSize"
+                  class="input-field"
+                  onchange="updatePreview()"
+                >
+                  <option value="xs">Extra Small</option>
+                  <option value="sm">Small</option>
+                  <option value="base" selected>Medium</option>
+                  <option value="lg">Large</option>
+                  <option value="xl">Extra Large</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label"
+                  >🔄 Rotation: <span id="rotationVal">0°</span></label
+                >
+                <input
+                  type="range"
+                  id="noteRotation"
+                  min="-8"
+                  max="8"
+                  value="0"
+                  class="w-full accent-emerald-500"
+                  oninput="updateRotationVal(); updatePreview()"
+                />
+              </div>
+              <div class="form-group">
+                <label class="form-label">📏 Card Width</label>
+                <select
+                  id="noteWidth"
+                  class="input-field"
+                  onchange="updatePreview()"
+                >
+                  <option value="auto">Auto</option>
+                  <option value="full">Full Width</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Tab -->
+          <div id="tab-preview" class="tab-content">
+            <div class="form-group">
+              <label class="form-label">👁️ Live Preview</label>
+              <div class="p-6 bg-[#0a0a0f] rounded-lg">
+                <div
+                  id="livePreview"
+                  class="sticky-note effect-fold preset-yellow p-4 max-w-sm mx-auto"
+                >
+                  <div class="sticky-tape"></div>
+                  <p class="text-center text-zinc-600">
+                    Preview appears here...
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button onclick="addNote()" class="btn btn-primary flex-1">
+            ✅ Add Note
+          </button>
+          <button onclick="closeModal('createModal')" class="btn flex-1">
+            ❌ Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- JSON MODAL -->
+    <div id="jsonModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+          <span class="ml-3 text-sm text-zinc-400 flex-1"
+            >📋 JSON Editor - Direct Copy/Paste</span
+          >
+          <button
+            onclick="closeModal('jsonModal')"
+            class="text-zinc-400 hover:text-white text-2xl leading-none"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div class="modal-body space-y-4">
+          <p class="text-sm text-zinc-400">
+            Paste JSON data directly to import notes, or copy current notes as
+            JSON:
+          </p>
+
+          <textarea
+            id="jsonEditor"
+            class="json-editor w-full h-64"
+            placeholder='Paste your JSON here...
+
+Example format:
+{
+  "notes": [
+    {
+      "title": "My Note",
+      "content": "Note content here",
+      "type": "law",
+      "preset": "yellow",
+      "effect": "fold",
+      "attach": "tape"
+    }
+  ]
+}'
+          ></textarea>
+
+          <div class="flex flex-wrap gap-2">
+            <button onclick="loadFromJSON()" class="btn btn-primary">
+              📥 Import from JSON
+            </button>
+            <button onclick="copyCurrentJSON()" class="btn">
+              📋 Copy Current Notes
+            </button>
+            <button onclick="formatJSON()" class="btn">🔧 Format JSON</button>
+            <button onclick="clearJSONEditor()" class="btn text-red-400">
+              🗑️ Clear
+            </button>
+          </div>
+
+          <div class="text-xs text-zinc-500 p-3 bg-[#0a0a0f] rounded-lg">
+            <strong>📌 Available Fields:</strong><br />
+            • <code>title</code> - Note title<br />
+            • <code>content</code> - Main content<br />
+            • <code>bullets</code> - Array of bullet points<br />
+            • <code>type</code> - law, meaning, example, impact, takeaway,
+            etc.<br />
+            • <code>preset</code> - yellow, pink, blue, green, purple, etc.<br />
+            • <code>effect</code> - fold, curved, torn, stacked, notebook,
+            etc.<br />
+            • <code>attach</code> - tape, pin, clip, none, etc.<br />
+            • <code>font</code> - inter, kalam, hindi, caveat, etc.<br />
+            • <code>fontSize</code> - xs, sm, base, lg, xl<br />
+            • <code>rotation</code> - -8 to 8 degrees<br />
+            • <code>customColor</code> - hex color like #ff0000
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRESETS MODAL -->
+    <div id="presetsModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+          <span class="ml-3 text-sm text-zinc-400 flex-1"
+            >🎨 Quick Presets</span
+          >
+          <button
+            onclick="closeModal('presetsModal')"
+            class="text-zinc-400 hover:text-white text-2xl leading-none"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div class="modal-body">
+          <p class="text-sm text-zinc-500 mb-4">
+            Click a preset to quickly add a styled note:
+          </p>
+
+          <div
+            class="grid grid-cols-2 sm:grid-cols-3 gap-3"
+            id="quickPresets"
+          ></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS MODAL -->
+    <div id="settingsModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+          <span class="ml-3 text-sm text-zinc-400 flex-1">⚙️ Settings</span>
+          <button
+            onclick="closeModal('settingsModal')"
+            class="text-zinc-400 hover:text-white text-2xl leading-none"
+          >
+            &times;
+          </button>
+        </div>
+
+        <div class="modal-body space-y-4">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">👤 Author Name</label>
+              <input
+                type="text"
+                id="setAuthor"
+                class="input-field"
+                value="Sudhir Kumar"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">🆔 Username</label>
+              <input
+                type="text"
+                id="setUsername"
+                class="input-field"
+                value="SudhirDevOps1"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">📐 Image Quality</label>
+              <select id="setQuality" class="input-field">
+                <option value="1">1x (Fast)</option>
+                <option value="2">2x (Good)</option>
+                <option value="3" selected>3x (Best)</option>
+                <option value="4">4x (Ultra)</option>
+                <option value="5">5x (Maximum)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">📊 Cards Per Row</label>
+              <select id="setColumns" class="input-field">
+                <option value="1">1 Column</option>
+                <option value="2" selected>2 Columns</option>
+                <option value="3">3 Columns</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">🎨 Export Background</label>
+              <input
+                type="color"
+                id="setExportBg"
+                value="#0a0a0f"
+                class="color-input"
+              />
+            </div>
+            <div class="form-group">
+              <label class="form-label">🔤 Default Font</label>
+              <select id="setDefaultFont" class="input-field">
+                <option value="inter">Inter</option>
+                <option value="poppins">Poppins</option>
+                <option value="hindi">Noto Sans Devanagari</option>
+                <option value="kalam">Kalam</option>
+                <option value="caveat">Caveat</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">✨ Default Card Effect</label>
+            <select id="setDefaultEffect" class="input-field">
+              <option value="fold">Fold</option>
+              <option value="curved">Curved</option>
+              <option value="torn">Torn</option>
+              <option value="stacked">Stacked</option>
+              <option value="notebook">Notebook</option>
+              <option value="3d">3D Lifted</option>
+              <option value="minimal">Minimal</option>
+            </select>
+          </div>
+
+          <div class="space-y-2">
+            <div class="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="setWatermark"
+                checked
+                class="accent-emerald-500"
+              />
+              <label class="text-sm text-zinc-400"
+                >Show watermark on notes</label
+              >
+            </div>
+            <div class="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="setRotation"
+                checked
+                class="accent-emerald-500"
+              />
+              <label class="text-sm text-zinc-400"
+                >Random rotation for sticky effect</label
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button
+            onclick="saveSettings(); closeModal('settingsModal')"
+            class="btn btn-primary flex-1"
+          >
+            💾 Save
+          </button>
+          <button onclick="resetSettings()" class="btn flex-1">🔄 Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"><span id="toastMsg">Success!</span></div>
+
+    <!-- Loading Overlay -->
+    <div id="loader" class="loader-overlay">
+      <div class="loader"></div>
+      <p id="loaderText" class="text-emerald-400">Processing...</p>
+    </div>
+
+    <!-- Hidden Download Area -->
+    <div id="downloadArea"></div>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-6 border-t border-[#2a2a3a]">
+      <div class="max-w-7xl mx-auto px-4 text-center">
+        <p class="text-zinc-500 text-sm">
+          Built by
+          <span class="text-cyan-400 font-semibold">Sudhir Kumar</span> •
+          <span class="text-emerald-400">@SudhirDevOps1</span> •
+          <span class="text-zinc-600">v6.0</span>
+        </p>
+      </div>
+    </footer>
+
+    <!-- JAVASCRIPT -->
+    <script>
+      /* ============================================
+           CONFIGURATION
+           ============================================ */
+
+      let CONFIG = {
+        author: "Sudhir Kumar",
+        username: "SudhirDevOps1",
+        quality: 3,
+        columns: 2,
+        exportBg: "#0a0a0f",
+        watermark: true,
+        rotation: true,
+        defaultFont: "inter",
+        defaultEffect: "fold",
+      };
+
+      let notes = [];
+      let debounceTimer = null;
+      let selectedPreset = "yellow";
+      let selectedAttach = "tape";
+      let selectedEffect = "fold";
+
+      // Color Presets
+      const PRESETS = {
+        yellow: {
+          bg: "linear-gradient(135deg, #fef9c3 0%, #fef08a 50%, #fde047 100%)",
+          text: "#422006",
+          border: "#fbbf24",
+        },
+        pink: {
+          bg: "linear-gradient(135deg, #fce7f3 0%, #fbcfe8 50%, #f9a8d4 100%)",
+          text: "#500724",
+          border: "#ec4899",
+        },
+        blue: {
+          bg: "linear-gradient(135deg, #dbeafe 0%, #bfdbfe 50%, #93c5fd 100%)",
+          text: "#1e3a5f",
+          border: "#3b82f6",
+        },
+        green: {
+          bg: "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #6ee7b7 100%)",
+          text: "#064e3b",
+          border: "#10b981",
+        },
+        purple: {
+          bg: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 50%, #c4b5fd 100%)",
+          text: "#3b0764",
+          border: "#8b5cf6",
+        },
+        orange: {
+          bg: "linear-gradient(135deg, #ffedd5 0%, #fed7aa 50%, #fdba74 100%)",
+          text: "#431407",
+          border: "#f97316",
+        },
+        cyan: {
+          bg: "linear-gradient(135deg, #cffafe 0%, #a5f3fc 50%, #67e8f9 100%)",
+          text: "#134e4a",
+          border: "#06b6d4",
+        },
+        rose: {
+          bg: "linear-gradient(135deg, #ffe4e6 0%, #fecdd3 50%, #fda4af 100%)",
+          text: "#4c0519",
+          border: "#f43f5e",
+        },
+        lime: {
+          bg: "linear-gradient(135deg, #ecfccb 0%, #d9f99d 50%, #bef264 100%)",
+          text: "#1a2e05",
+          border: "#84cc16",
+        },
+        amber: {
+          bg: "linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fbbf24 100%)",
+          text: "#451a03",
+          border: "#f59e0b",
+        },
+        teal: {
+          bg: "linear-gradient(135deg, #ccfbf1 0%, #99f6e4 50%, #5eead4 100%)",
+          text: "#042f2e",
+          border: "#14b8a6",
+        },
+        indigo: {
+          bg: "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 50%, #a5b4fc 100%)",
+          text: "#1e1b4b",
+          border: "#6366f1",
+        },
+        fuchsia: {
+          bg: "linear-gradient(135deg, #fae8ff 0%, #f5d0fe 50%, #e879f9 100%)",
+          text: "#4a044e",
+          border: "#d946ef",
+        },
+        sky: {
+          bg: "linear-gradient(135deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%)",
+          text: "#082f49",
+          border: "#0ea5e9",
+        },
+        emerald: {
+          bg: "linear-gradient(135deg, #d1fae5 0%, #a7f3d0 50%, #34d399 100%)",
+          text: "#022c22",
+          border: "#10b981",
+        },
+        violet: {
+          bg: "linear-gradient(135deg, #ede9fe 0%, #ddd6fe 50%, #a78bfa 100%)",
+          text: "#2e1065",
+          border: "#8b5cf6",
+        },
+        sunset: {
+          bg: "linear-gradient(135deg, #fef3c7 0%, #fda4af 50%, #c084fc 100%)",
+          text: "#451a03",
+          border: "#fb7185",
+        },
+        ocean: {
+          bg: "linear-gradient(135deg, #a5f3fc 0%, #7dd3fc 50%, #38bdf8 100%)",
+          text: "#0c4a6e",
+          border: "#0284c7",
+        },
+        forest: {
+          bg: "linear-gradient(135deg, #bbf7d0 0%, #86efac 50%, #4ade80 100%)",
+          text: "#14532d",
+          border: "#22c55e",
+        },
+        lavender: {
+          bg: "linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 50%, #c084fc 100%)",
+          text: "#581c87",
+          border: "#a855f7",
+        },
+        peach: {
+          bg: "linear-gradient(135deg, #fed7aa 0%, #fdba74 50%, #fb923c 100%)",
+          text: "#7c2d12",
+          border: "#f97316",
+        },
+        mint: {
+          bg: "linear-gradient(135deg, #a7f3d0 0%, #6ee7b7 50%, #34d399 100%)",
+          text: "#064e3b",
+          border: "#10b981",
+        },
+        cream: {
+          bg: "linear-gradient(135deg, #fef3e2 0%, #fde8c7 50%, #fcd9a8 100%)",
+          text: "#78350f",
+          border: "#d97706",
+        },
+        slate: {
+          bg: "linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #94a3b8 100%)",
+          text: "#1e293b",
+          border: "#64748b",
+        },
+        red: {
+          bg: "linear-gradient(135deg, #fee2e2 0%, #fecaca 50%, #fca5a5 100%)",
+          text: "#7f1d1d",
+          border: "#ef4444",
+        },
+        gold: {
+          bg: "linear-gradient(135deg, #fef3c7 0%, #fcd34d 50%, #f59e0b 100%)",
+          text: "#78350f",
+          border: "#d97706",
+        },
+        dark: {
+          bg: "linear-gradient(135deg, #27272a 0%, #18181b 50%, #09090b 100%)",
+          text: "#e4e4e7",
+          border: "#3f3f46",
+        },
+        neon: {
+          bg: "linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%)",
+          text: "#a5f3fc",
+          border: "#06b6d4",
+        },
+      };
+
+      // Effects
+      const EFFECTS = [
+        { id: "fold", name: "Fold", emoji: "📄" },
+        { id: "curved", name: "Curved", emoji: "🌊" },
+        { id: "torn", name: "Torn", emoji: "📃" },
+        { id: "stacked", name: "Stacked", emoji: "📚" },
+        { id: "notebook", name: "Notebook", emoji: "📓" },
+        { id: "polaroid", name: "Polaroid", emoji: "📸" },
+        { id: "postcard", name: "Postcard", emoji: "✉️" },
+        { id: "3d", name: "3D Lifted", emoji: "🎯" },
+        { id: "taped", name: "Taped", emoji: "📋" },
+        { id: "ticket", name: "Ticket", emoji: "🎟️" },
+        { id: "stamp", name: "Stamp", emoji: "📮" },
+        { id: "cork", name: "Pinned", emoji: "📌" },
+        { id: "washi", name: "Washi", emoji: "🎀" },
+        { id: "gradient", name: "Gradient", emoji: "🌈" },
+        { id: "minimal", name: "Minimal", emoji: "⬜" },
+        { id: "neon", name: "Neon", emoji: "💡" },
+        { id: "glass", name: "Glass", emoji: "🪟" },
+      ];
+
+      // Attachments
+      const ATTACHMENTS = [
+        { id: "tape", name: "Tape", emoji: "📋" },
+        { id: "tape-corner", name: "Corner", emoji: "📐" },
+        { id: "tape-double", name: "Double", emoji: "📎" },
+        { id: "pin", name: "Red Pin", emoji: "📌" },
+        { id: "pin-gold", name: "Gold Pin", emoji: "🔶" },
+        { id: "pin-blue", name: "Blue Pin", emoji: "🔷" },
+        { id: "pin-green", name: "Green Pin", emoji: "🟢" },
+        { id: "clip", name: "Clip", emoji: "🔗" },
+        { id: "clip-gold", name: "Gold Clip", emoji: "✨" },
+        { id: "clip-rose", name: "Rose Clip", emoji: "💗" },
+        { id: "staple", name: "Staple", emoji: "📍" },
+        { id: "magnet", name: "Magnet", emoji: "🧲" },
+        { id: "binder", name: "Binder", emoji: "📒" },
+        { id: "string", name: "String", emoji: "🧵" },
+        { id: "none", name: "None", emoji: "📄" },
+      ];
+
+      const FONTS = {
+        inter: "'Inter', sans-serif",
+        poppins: "'Poppins', sans-serif",
+        mono: "'JetBrains Mono', monospace",
+        hindi: "'Noto Sans Devanagari', 'Hind', sans-serif",
+        "hindi-tiro": "'Tiro Devanagari Hindi', serif",
+        mukta: "'Mukta', sans-serif",
+        kalam: "'Kalam', cursive",
+        caveat: "'Caveat', cursive",
+        patrick: "'Patrick Hand', cursive",
+        pacifico: "'Pacifico', cursive",
+        dancing: "'Dancing Script', cursive",
+        satisfy: "'Satisfy', cursive",
+        vibes: "'Great Vibes', cursive",
+        sacramento: "'Sacramento', cursive",
+        shadows: "'Shadows Into Light', cursive",
+        indie: "'Indie Flower', cursive",
+        architect: "'Architects Daughter', cursive",
+        comic: "'Comic Neue', cursive",
+      };
+
+      const TYPE_PRESETS = {
+        law: { preset: "yellow", effect: "fold" },
+        meaning: { preset: "blue", effect: "curved" },
+        example: { preset: "green", effect: "stacked" },
+        impact: { preset: "pink", effect: "fold" },
+        takeaway: { preset: "purple", effect: "notebook" },
+        quote: { preset: "cyan", effect: "3d" },
+        tip: { preset: "lime", effect: "taped" },
+        warning: { preset: "orange", effect: "stamp" },
+        idea: { preset: "fuchsia", effect: "cork" },
+        note: { preset: "yellow", effect: "fold" },
+        day: { preset: "orange", effect: "torn" },
+      };
+
+      const TYPE_EMOJIS = {
+        law: "⚖️",
+        meaning: "💡",
+        example: "📌",
+        impact: "✨",
+        takeaway: "🎯",
+        quote: "💬",
+        tip: "💡",
+        warning: "⚠️",
+        idea: "💭",
+        note: "📝",
+        day: "📅",
+        question: "❓",
+        answer: "✅",
+        reminder: "🔔",
+        goal: "🎯",
+        task: "✔️",
+      };
+
+      /* ============================================
+           INITIALIZATION
+           ============================================ */
+
+      document.addEventListener("DOMContentLoaded", () => {
+        loadSettings();
+        initializeSelectors();
+        updateStats();
+        log("READY", "System initialized - v6.0");
+      });
+
+      function initializeSelectors() {
+        // Preset Selector
+        const presetGrid = document.getElementById("presetSelector");
+        presetGrid.innerHTML = Object.keys(PRESETS)
+          .map(
+            (key) =>
+              `<div class="preset-option preset-${key} ${
+                key === selectedPreset ? "selected" : ""
+              }" data-preset="${key}" onclick="selectPreset('${key}')"></div>`
+          )
+          .join("");
+
+        // Effect Selector
+        const effectGrid = document.getElementById("effectSelector");
+        effectGrid.innerHTML = EFFECTS.map(
+          (e) =>
+            `<div class="effect-option ${
+              e.id === selectedEffect ? "selected" : ""
+            }" data-effect="${e.id}" onclick="selectEffect('${e.id}')">
+                    <span class="emoji">${e.emoji}</span>
+                    <span class="label">${e.name}</span>
+                </div>`
+        ).join("");
+
+        // Attachment Selector
+        const attachGrid = document.getElementById("attachSelector");
+        attachGrid.innerHTML = ATTACHMENTS.map(
+          (a) =>
+            `<div class="attach-option ${
+              a.id === selectedAttach ? "selected" : ""
+            }" data-attach="${a.id}" onclick="selectAttach('${a.id}')">
+                    <span class="emoji">${a.emoji}</span>
+                    <span class="label">${a.name}</span>
+                </div>`
+        ).join("");
+
+        // Quick Presets
+        const quickGrid = document.getElementById("quickPresets");
+        const quickTypes = [
+          { type: "law", color: "amber", label: "Law Card" },
+          { type: "meaning", color: "blue", label: "Meaning" },
+          { type: "example", color: "green", label: "Example" },
+          { type: "impact", color: "pink", label: "Impact" },
+          { type: "takeaway", color: "purple", label: "Takeaway" },
+          { type: "quote", color: "cyan", label: "Quote" },
+          { type: "tip", color: "lime", label: "Tip" },
+          { type: "warning", color: "orange", label: "Warning" },
+          { type: "idea", color: "fuchsia", label: "Idea" },
+        ];
+        quickGrid.innerHTML = quickTypes
+          .map(
+            (q) =>
+              `<button onclick="quickAdd('${
+                q.type
+              }')" class="p-4 rounded-xl bg-${q.color}-500/20 hover:bg-${
+                q.color
+              }-500/30 border border-${q.color}-500/30 transition text-left">
+                    <div class="text-2xl mb-2">${TYPE_EMOJIS[q.type]}</div>
+                    <div class="font-semibold text-${q.color}-300 text-sm">${
+                q.label
+              }</div>
+                </button>`
+          )
+          .join("");
+      }
+
+      /* ============================================
+           TAB & MODAL FUNCTIONS
+           ============================================ */
+
+      function switchTab(tabName) {
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((btn) => btn.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((content) => content.classList.remove("active"));
+        document
+          .querySelector(`.tab-btn[onclick="switchTab('${tabName}')"]`)
+          ?.classList.add("active");
+        document.getElementById(`tab-${tabName}`)?.classList.add("active");
+        if (tabName === "preview") updatePreview();
+      }
+
+      function openCreateModal() {
+        document.getElementById("createModal").classList.add("active");
+        document.body.style.overflow = "hidden";
+        resetCreateForm();
+        updatePreview();
+      }
+
+      function openJSONModal() {
+        document.getElementById("jsonModal").classList.add("active");
+        document.body.style.overflow = "hidden";
+        copyCurrentJSON();
+      }
+
+      function openPresetsModal() {
+        document.getElementById("presetsModal").classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+
+      function openSettingsModal() {
+        document.getElementById("settingsModal").classList.add("active");
+        document.body.style.overflow = "hidden";
+        document.getElementById("setAuthor").value = CONFIG.author;
+        document.getElementById("setUsername").value = CONFIG.username;
+        document.getElementById("setQuality").value = CONFIG.quality;
+        document.getElementById("setColumns").value = CONFIG.columns;
+        document.getElementById("setExportBg").value = CONFIG.exportBg;
+        document.getElementById("setWatermark").checked = CONFIG.watermark;
+        document.getElementById("setRotation").checked = CONFIG.rotation;
+        document.getElementById("setDefaultFont").value = CONFIG.defaultFont;
+        document.getElementById("setDefaultEffect").value =
+          CONFIG.defaultEffect;
+      }
+
+      function closeModal(id) {
+        document.getElementById(id).classList.remove("active");
+        document.body.style.overflow = "";
+      }
+
+      function resetCreateForm() {
+        document.getElementById("noteTitle").value = "";
+        document.getElementById("noteContent").value = "";
+        document.getElementById("noteBullets").value = "";
+        document.getElementById("noteType").value = "note";
+        document.getElementById("noteFont").value = CONFIG.defaultFont;
+        document.getElementById("noteFontSize").value = "base";
+        document.getElementById("noteRotation").value = 0;
+        document.getElementById("rotationVal").textContent = "0°";
+        document.getElementById("noteWidth").value = "auto";
+        document.getElementById("customColorCheck").checked = false;
+        document.getElementById("customTextColor").disabled = true;
+
+        selectedPreset = "yellow";
+        selectedAttach = "tape";
+        selectedEffect = CONFIG.defaultEffect;
+
+        initializeSelectors();
+        switchTab("style");
+      }
+
+      function updateRotationVal() {
+        document.getElementById("rotationVal").textContent = `${
+          document.getElementById("noteRotation").value
+        }°`;
+      }
+
+      /* ============================================
+           SELECTOR FUNCTIONS
+           ============================================ */
+
+      function selectPreset(preset) {
+        selectedPreset = preset;
+        document
+          .querySelectorAll(".preset-option")
+          .forEach((el) => el.classList.remove("selected"));
+        document
+          .querySelector(`[data-preset="${preset}"]`)
+          ?.classList.add("selected");
+        updatePreview();
+      }
+
+      function selectEffect(effect) {
+        selectedEffect = effect;
+        document
+          .querySelectorAll(".effect-option")
+          .forEach((el) => el.classList.remove("selected"));
+        document
+          .querySelector(`[data-effect="${effect}"]`)
+          ?.classList.add("selected");
+        updatePreview();
+      }
+
+      function selectAttach(attach) {
+        selectedAttach = attach;
+        document
+          .querySelectorAll(".attach-option")
+          .forEach((el) => el.classList.remove("selected"));
+        document
+          .querySelector(`[data-attach="${attach}"]`)
+          ?.classList.add("selected");
+        updatePreview();
+      }
+
+      function toggleCustomColor() {
+        const checked = document.getElementById("customColorCheck").checked;
+        document.getElementById("customTextColor").disabled = !checked;
+        updatePreview();
+      }
+
+      /* ============================================
+           PREVIEW UPDATE
+           ============================================ */
+
+      function updatePreview() {
+        const title =
+          document.getElementById("noteTitle").value || "Note Title";
+        const content =
+          document.getElementById("noteContent").value ||
+          "Your content here... 🎉";
+        const bullets = document
+          .getElementById("noteBullets")
+          .value.split("\n")
+          .filter((b) => b.trim());
+        const font = document.getElementById("noteFont").value;
+        const fontSize = document.getElementById("noteFontSize").value;
+        const type = document.getElementById("noteType").value;
+        const rotation = document.getElementById("noteRotation").value;
+        const useCustomColor =
+          document.getElementById("customColorCheck").checked;
+        const customColor = document.getElementById("customTextColor").value;
+
+        const preset = PRESETS[selectedPreset];
+        const emoji = TYPE_EMOJIS[type] || "📝";
+        const textColor = useCustomColor ? customColor : preset.text;
+        const fontFamily = FONTS[font] || FONTS.inter;
+        const fontSizeMap = {
+          xs: "11px",
+          sm: "12px",
+          base: "14px",
+          lg: "16px",
+          xl: "18px",
+        };
+
+        const preview = document.getElementById("livePreview");
+        preview.className = `sticky-note effect-${selectedEffect} p-4 max-w-sm mx-auto`;
+        preview.style.background = preset.bg;
+        preview.style.color = textColor;
+        preview.style.fontFamily = fontFamily;
+        preview.style.fontSize = fontSizeMap[fontSize];
+        preview.style.transform = `rotate(${rotation}deg)`;
+
+        let attachHTML = getAttachHTML(selectedAttach);
+        let foldHTML =
+          selectedEffect === "fold" ? `<div class="corner-fold"></div>` : "";
+        let bulletsHTML =
+          bullets.length > 0
+            ? `<ul style="margin-top:8px;padding-left:0;list-style:none;">${bullets
+                .map(
+                  (b) =>
+                    `<li style="display:flex;gap:6px;margin-bottom:4px;"><span style="color:${
+                      preset.border
+                    }">▸</span><span>${escapeHTML(
+                      b.replace(/^[-•*]\s*/, "")
+                    )}</span></li>`
+                )
+                .join("")}</ul>`
+            : "";
+
+        preview.innerHTML = `
+                ${attachHTML}
+                ${foldHTML}
+                <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;">
+                    <span style="font-size:24px;">${emoji}</span>
+                    <div>
+                        <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;opacity:0.6;">${type}</div>
+                        <h3 style="font-size:15px;font-weight:700;line-height:1.3;">${escapeHTML(
+                          title
+                        )}</h3>
+                    </div>
+                </div>
+                <p style="line-height:1.6;opacity:0.9;">${escapeHTML(
+                  content
+                )}</p>
+                ${bulletsHTML}
+                ${
+                  CONFIG.watermark
+                    ? `<div style="margin-top:10px;padding-top:6px;border-top:1px solid ${preset.border}40;font-size:9px;opacity:0.4;display:flex;justify-content:space-between;"><span>📝</span><span>@${CONFIG.username}</span></div>`
+                    : ""
+                }
+            `;
+      }
+
+      function getAttachHTML(attach) {
+        const map = {
+          tape: '<div class="sticky-tape"></div>',
+          "tape-corner": '<div class="sticky-tape-corner"></div>',
+          "tape-double": '<div class="sticky-tape-double"></div>',
+          pin: '<div class="sticky-pin"></div>',
+          "pin-gold": '<div class="sticky-pin-gold"></div>',
+          "pin-blue": '<div class="sticky-pin-blue"></div>',
+          "pin-green": '<div class="sticky-pin-green"></div>',
+          clip: '<div class="sticky-clip"></div>',
+          "clip-gold": '<div class="sticky-clip-gold"></div>',
+          "clip-rose": '<div class="sticky-clip-rose"></div>',
+          staple: '<div class="sticky-staple"></div>',
+          magnet: '<div class="sticky-magnet"></div>',
+          binder: '<div class="sticky-binder"></div>',
+          string: '<div class="sticky-string"></div>',
+          none: "",
+        };
+        return map[attach] || "";
+      }
+
+      /* ============================================
+           ADD NOTE
+           ============================================ */
+
+      function addNote() {
+        const title = document.getElementById("noteTitle").value.trim();
+        const content = document.getElementById("noteContent").value.trim();
+        const bullets = document
+          .getElementById("noteBullets")
+          .value.split("\n")
+          .filter((b) => b.trim())
+          .map((b) => b.replace(/^[-•*]\s*/, "").trim());
+        const type = document.getElementById("noteType").value;
+        const font = document.getElementById("noteFont").value;
+        const fontSize = document.getElementById("noteFontSize").value;
+        const rotation = parseFloat(
+          document.getElementById("noteRotation").value
+        );
+        const width = document.getElementById("noteWidth").value;
+        const useCustomColor =
+          document.getElementById("customColorCheck").checked;
+        const customColor = document.getElementById("customTextColor").value;
+
+        if (!title && !content) {
+          toast("⚠️ Please enter title or content");
+          return;
+        }
+
+        const note = {
+          id: `note-${Date.now()}`,
+          title: title || "Untitled",
+          content,
+          bullets,
+          type,
+          preset: selectedPreset,
+          effect: selectedEffect,
+          attach: selectedAttach,
+          font,
+          fontSize,
+          rotation: rotation || (CONFIG.rotation ? Math.random() * 6 - 3 : 0),
+          width,
+          customColor: useCustomColor ? customColor : null,
+          timestamp: new Date().toISOString(),
+        };
+
+        notes.push(note);
+        renderNotes();
+        closeModal("createModal");
+        toast("✅ Note added!");
+        log("CREATE", `Added: ${title}`);
+      }
+
+      function quickAdd(type) {
+        closeModal("presetsModal");
+        openCreateModal();
+        document.getElementById("noteType").value = type;
+        const tp = TYPE_PRESETS[type] || { preset: "yellow", effect: "fold" };
+        selectPreset(tp.preset);
+        selectEffect(tp.effect);
+        updatePreview();
+      }
+
+      /* ============================================
+           RENDER NOTES
+           ============================================ */
+
+      function renderNotes() {
+        const container = document.getElementById("cardsContainer");
+
+        if (notes.length === 0) {
+          container.innerHTML = `
+                    <div class="col-span-full text-center py-16">
+                        <div class="text-6xl mb-4 opacity-40">📝</div>
+                        <p class="text-zinc-500">No notes yet...</p>
+                        <p class="text-zinc-600 text-sm mt-2">Type above, click "➕ Create", or "📋 JSON"</p>
+                    </div>
+                `;
+          container.style.gridTemplateColumns = "";
+        } else {
+          container.innerHTML = notes
+            .map((note, i) => createNoteHTML(note, i))
+            .join("");
+          container.style.gridTemplateColumns = `repeat(${CONFIG.columns}, 1fr)`;
+        }
+
+        document.getElementById("cardCountBadge").textContent = `${
+          notes.length
+        } note${notes.length !== 1 ? "s" : ""}`;
+        updateStats();
+      }
+
+      function createNoteHTML(note, index) {
+        const preset = PRESETS[note.preset] || PRESETS.yellow;
+        const emoji = TYPE_EMOJIS[note.type] || "📝";
+        const textColor = note.customColor || preset.text;
+        const fontFamily = FONTS[note.font] || FONTS.inter;
+        const fontSizeMap = {
+          xs: "11px",
+          sm: "12px",
+          base: "14px",
+          lg: "16px",
+          xl: "18px",
+        };
+        const fontSize = fontSizeMap[note.fontSize] || "14px";
+        const effect = note.effect || "fold";
+
+        let attachHTML = getAttachHTML(note.attach || "tape");
+        let foldHTML =
+          effect === "fold" ? `<div class="corner-fold"></div>` : "";
+
+        let bulletsHTML =
+          note.bullets?.length > 0
+            ? `
+                <ul style="margin-top:8px;padding-left:0;list-style:none;">
+                    ${note.bullets
+                      .map(
+                        (b) =>
+                          `<li style="display:flex;gap:6px;margin-bottom:4px;"><span style="color:${
+                            preset.border
+                          }">▸</span><span>${escapeHTML(b)}</span></li>`
+                      )
+                      .join("")}
+                </ul>
+            `
+            : "";
+
+        const widthClass = note.width === "full" ? "col-span-full" : "";
+
+        return `
+                <div class="sticky-note effect-${effect} ${widthClass}" id="${
+          note.id
+        }" style="background:${preset.bg};color:${textColor};border:1px solid ${
+          preset.border
+        };transform:rotate(${
+          note.rotation || 0
+        }deg);font-family:${fontFamily};font-size:${fontSize};margin-top:24px;padding:16px;">
+                    ${attachHTML}
+                    ${foldHTML}
+                    
+                    <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;">
+                        <div style="display:flex;align-items:flex-start;gap:10px;">
+                            <span style="font-size:28px;">${emoji}</span>
+                            <div>
+                                <div style="font-size:9px;text-transform:uppercase;letter-spacing:1px;opacity:0.6;">${
+                                  note.type
+                                }</div>
+                                <h3 style="font-size:16px;font-weight:700;line-height:1.3;">${escapeHTML(
+                                  note.title
+                                )}</h3>
+                            </div>
+                        </div>
+                        <div style="display:flex;gap:2px;opacity:0.5;">
+                            <button onclick="copyNoteJSON('${
+                              note.id
+                            }')" style="background:none;border:none;cursor:pointer;padding:4px;font-size:12px;" title="Copy JSON">📋</button>
+                            <button onclick="downloadNote('${
+                              note.id
+                            }')" style="background:none;border:none;cursor:pointer;padding:4px;font-size:12px;" title="Download">📥</button>
+                            <button onclick="editNote('${
+                              note.id
+                            }')" style="background:none;border:none;cursor:pointer;padding:4px;font-size:12px;" title="Edit">✏️</button>
+                            <button onclick="deleteNote('${
+                              note.id
+                            }')" style="background:none;border:none;cursor:pointer;padding:4px;font-size:12px;" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                    
+                    ${
+                      note.content
+                        ? `<p style="line-height:1.6;opacity:0.9;">${escapeHTML(
+                            note.content
+                          )}</p>`
+                        : ""
+                    }
+                    ${bulletsHTML}
+                    
+                    ${
+                      CONFIG.watermark
+                        ? `
+                        <div style="margin-top:12px;padding-top:8px;border-top:1px solid ${
+                          preset.border
+                        }30;font-size:10px;opacity:0.4;display:flex;justify-content:space-between;">
+                            <span>#${index + 1}</span>
+                            <span>@${CONFIG.username}</span>
+                        </div>
+                    `
+                        : ""
+                    }
+                </div>
+            `;
+      }
+
+      /* ============================================
+           NOTE OPERATIONS
+           ============================================ */
+
+      function deleteNote(id) {
+        if (!confirm("Delete this note?")) return;
+        notes = notes.filter((n) => n.id !== id);
+        renderNotes();
+        toast("🗑️ Note deleted");
+        log("DELETE", `Removed: ${id}`);
+      }
+
+      function editNote(id) {
+        const note = notes.find((n) => n.id === id);
+        if (!note) return;
+
+        openCreateModal();
+        document.getElementById("noteTitle").value = note.title;
+        document.getElementById("noteContent").value = note.content;
+        document.getElementById("noteBullets").value = (note.bullets || [])
+          .map((b) => `- ${b}`)
+          .join("\n");
+        document.getElementById("noteType").value = note.type;
+        document.getElementById("noteFont").value = note.font || "inter";
+        document.getElementById("noteFontSize").value = note.fontSize || "base";
+        document.getElementById("noteRotation").value = note.rotation || 0;
+        updateRotationVal();
+        document.getElementById("noteWidth").value = note.width || "auto";
+
+        if (note.customColor) {
+          document.getElementById("customColorCheck").checked = true;
+          document.getElementById("customTextColor").disabled = false;
+          document.getElementById("customTextColor").value = note.customColor;
+        }
+
+        selectPreset(note.preset || "yellow");
+        selectEffect(note.effect || "fold");
+        selectAttach(note.attach || "tape");
+
+        notes = notes.filter((n) => n.id !== id);
+        updatePreview();
+      }
+
+      async function copyNoteJSON(id) {
+        const note = notes.find((n) => n.id === id);
+        if (!note) return;
+        try {
+          await navigator.clipboard.writeText(JSON.stringify(note, null, 2));
+          toast("📋 Note JSON copied!");
+        } catch (e) {
+          toast("❌ Copy failed");
+        }
+      }
+
+      /* ============================================
+           JSON FUNCTIONS
+           ============================================ */
+
+      function loadFromJSON() {
+        const jsonText = document.getElementById("jsonEditor").value.trim();
+        if (!jsonText) {
+          toast("⚠️ Paste JSON first");
+          return;
+        }
+
+        try {
+          const data = JSON.parse(jsonText);
+          let importedNotes = [];
+
+          if (Array.isArray(data)) {
+            importedNotes = data;
+          } else if (data.notes && Array.isArray(data.notes)) {
+            importedNotes = data.notes;
+          } else if (data.title || data.content) {
+            importedNotes = [data];
+          }
+
+          importedNotes.forEach((n, i) => {
+            notes.push({
+              id: `note-${Date.now()}-${i}`,
+              title: n.title || "Imported Note",
+              content: n.content || "",
+              bullets: n.bullets || [],
+              type: n.type || "note",
+              preset: n.preset || "yellow",
+              effect: n.effect || CONFIG.defaultEffect,
+              attach: n.attach || "tape",
+              font: n.font || CONFIG.defaultFont,
+              fontSize: n.fontSize || "base",
+              rotation:
+                n.rotation ?? (CONFIG.rotation ? Math.random() * 6 - 3 : 0),
+              width: n.width || "auto",
+              customColor: n.customColor || null,
+              timestamp: new Date().toISOString(),
+            });
+          });
+
+          renderNotes();
+          closeModal("jsonModal");
+          toast(`✅ Imported ${importedNotes.length} notes!`);
+          log("IMPORT", `Added ${importedNotes.length} notes from JSON`);
+        } catch (err) {
+          toast("❌ Invalid JSON: " + err.message);
+          log("ERROR", "JSON parse failed");
+        }
+      }
+
+      function copyCurrentJSON() {
+        const data = { notes, author: `@${CONFIG.username}`, version: "6.0" };
+        document.getElementById("jsonEditor").value = JSON.stringify(
+          data,
+          null,
+          2
+        );
+      }
+
+      function formatJSON() {
+        try {
+          const data = JSON.parse(document.getElementById("jsonEditor").value);
+          document.getElementById("jsonEditor").value = JSON.stringify(
+            data,
+            null,
+            2
+          );
+          toast("✅ JSON formatted!");
+        } catch (e) {
+          toast("❌ Invalid JSON");
+        }
+      }
+
+      function clearJSONEditor() {
+        document.getElementById("jsonEditor").value = "";
+      }
+
+      /* ============================================
+           DOWNLOAD FUNCTIONS
+           ============================================ */
+
+      function showLoader(text = "Processing...") {
+        document.getElementById("loaderText").textContent = text;
+        document.getElementById("loader").classList.add("active");
+      }
+
+      function hideLoader() {
+        document.getElementById("loader").classList.remove("active");
+      }
+
+      async function downloadNote(id) {
+        const noteEl = document.getElementById(id);
+        if (!noteEl) {
+          toast("❌ Note not found");
+          return;
+        }
+
+        showLoader(`Rendering ${CONFIG.quality}x...`);
+        log("DOWNLOAD", `Exporting: ${id}`);
+
+        try {
+          const clone = noteEl.cloneNode(true);
+          clone.style.transform = "none";
+          clone.style.margin = "30px";
+          clone.querySelectorAll("button").forEach((b) => b.remove());
+
+          const wrapper = document.getElementById("downloadArea");
+          wrapper.innerHTML = "";
+          wrapper.style.cssText = `position:absolute;left:-9999px;top:0;padding:50px;background:${CONFIG.exportBg};display:inline-block;`;
+          wrapper.appendChild(clone);
+
+          await new Promise((r) => setTimeout(r, 300));
+
+          const canvas = await html2canvas(wrapper, {
+            scale: CONFIG.quality,
+            backgroundColor: CONFIG.exportBg,
+            logging: false,
+            useCORS: true,
+            allowTaint: true,
+          });
+
+          const link = document.createElement("a");
+          link.download = `${CONFIG.username}-note-${Date.now()}.png`;
+          link.href = canvas.toDataURL("image/png", 1.0);
+          link.click();
+
+          wrapper.innerHTML = "";
+          hideLoader();
+          toast(`✅ Downloaded (${CONFIG.quality}x)`);
+          log("SUCCESS", "Note exported");
+        } catch (err) {
+          hideLoader();
+          toast("❌ Download failed");
+          log("ERROR", err.message);
+        }
+      }
+
+      async function downloadAllCards() {
+        if (notes.length === 0) {
+          toast("⚠️ No notes to download");
+          return;
+        }
+
+        showLoader(`Preparing ${notes.length} notes...`);
+
+        for (let i = 0; i < notes.length; i++) {
+          document.getElementById("loaderText").textContent = `Exporting ${
+            i + 1
+          }/${notes.length}...`;
+
+          try {
+            const noteEl = document.getElementById(notes[i].id);
+            if (!noteEl) continue;
+
+            const clone = noteEl.cloneNode(true);
+            clone.style.transform = "none";
+            clone.style.margin = "30px";
+            clone.querySelectorAll("button").forEach((b) => b.remove());
+
+            const wrapper = document.getElementById("downloadArea");
+            wrapper.innerHTML = "";
+            wrapper.style.cssText = `position:absolute;left:-9999px;top:0;padding:50px;background:${CONFIG.exportBg};display:inline-block;`;
+            wrapper.appendChild(clone);
+
+            await new Promise((r) => setTimeout(r, 300));
+
+            const canvas = await html2canvas(wrapper, {
+              scale: CONFIG.quality,
+              backgroundColor: CONFIG.exportBg,
+              logging: false,
+            });
+
+            const link = document.createElement("a");
+            link.download = `${CONFIG.username}-note-${i + 1}.png`;
+            link.href = canvas.toDataURL("image/png", 1.0);
+            link.click();
+
+            await new Promise((r) => setTimeout(r, 500));
+          } catch (err) {
+            log("ERROR", `Failed note ${i + 1}`);
+          }
+        }
+
+        document.getElementById("downloadArea").innerHTML = "";
+        hideLoader();
+        toast("✅ All notes downloaded!");
+        log("SUCCESS", "Batch export complete");
+      }
+
+      async function downloadFullPage() {
+        if (notes.length === 0) {
+          toast("⚠️ No notes");
+          return;
+        }
+
+        showLoader(`Rendering full page...`);
+
+        try {
+          const container = document.getElementById("cardsContainer");
+          const buttons = container.querySelectorAll("button");
+          buttons.forEach((b) => (b.style.display = "none"));
+
+          container
+            .querySelectorAll(".sticky-note")
+            .forEach((c) => (c.style.transform = "none"));
+
+          await new Promise((r) => setTimeout(r, 300));
+
+          const canvas = await html2canvas(container, {
+            scale: CONFIG.quality,
+            backgroundColor: CONFIG.exportBg,
+            logging: false,
+            useCORS: true,
+          });
+
+          buttons.forEach((b) => (b.style.display = ""));
+          notes.forEach((n) => {
+            const el = document.getElementById(n.id);
+            if (el) el.style.transform = `rotate(${n.rotation}deg)`;
+          });
+
+          const link = document.createElement("a");
+          link.download = `${CONFIG.username}-all-notes-${Date.now()}.png`;
+          link.href = canvas.toDataURL("image/png", 1.0);
+          link.click();
+
+          hideLoader();
+          toast("✅ Full page downloaded!");
+        } catch (err) {
+          hideLoader();
+          toast("❌ Export failed");
+        }
+      }
+
+      /* ============================================
+           TEXT PARSING
+           ============================================ */
+
+      function parseText(text) {
+        if (!text.trim()) return;
+
+        const lines = text.split("\n");
+        let currentNote = null;
+
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i].trim();
+          if (!line) continue;
+
+          // Day header
+          if (/^day\s*\d+/i.test(line)) {
+            if (currentNote) notes.push(currentNote);
+            currentNote = createParsedNote(
+              line,
+              "day",
+              "orange",
+              "torn",
+              "pin",
+              i
+            );
+            continue;
+          }
+
+          // Law
+          if (/^(law|rule)\s*\d*\s*:/i.test(line)) {
+            if (currentNote) notes.push(currentNote);
+            const colonIdx = line.indexOf(":");
+            currentNote = createParsedNote(
+              colonIdx > -1 ? line.substring(colonIdx + 1).trim() : line,
+              "law",
+              "yellow",
+              "fold",
+              "tape",
+              i
+            );
+            continue;
+          }
+
+          // Section types
+          const sectionTypes = [
+            { key: "meaning", preset: "blue", effect: "curved" },
+            { key: "example", preset: "green", effect: "stacked" },
+            { key: "positive impact", preset: "pink", effect: "fold" },
+            { key: "negative impact", preset: "rose", effect: "fold" },
+            { key: "impact", preset: "pink", effect: "fold" },
+            { key: "takeaway", preset: "purple", effect: "notebook" },
+          ];
+
+          let matched = false;
+          for (const st of sectionTypes) {
+            if (
+              line.toLowerCase().startsWith(st.key + ":") ||
+              line.toLowerCase().startsWith(st.key + " :")
+            ) {
+              if (currentNote) notes.push(currentNote);
+              const colonIdx = line.indexOf(":");
+              currentNote = createParsedNote(
+                st.key.charAt(0).toUpperCase() + st.key.slice(1),
+                st.key.includes("impact") ? "impact" : st.key,
+                st.preset,
+                st.effect,
+                "tape",
+                i
+              );
+              currentNote.content =
+                colonIdx > -1 ? line.substring(colonIdx + 1).trim() : "";
+              matched = true;
+              break;
+            }
+          }
+          if (matched) continue;
+
+          // Takeaway heading
+          if (/takeaway/i.test(line) && !line.includes(":")) {
+            if (currentNote) notes.push(currentNote);
+            currentNote = createParsedNote(
+              line.replace(/:/g, "").trim(),
+              "takeaway",
+              "purple",
+              "notebook",
+              "pin",
+              i
+            );
+            continue;
+          }
+
+          // Bullet point
+          if (/^[-•*]/.test(line)) {
+            if (currentNote) {
+              currentNote.bullets.push(line.replace(/^[-•*]\s*/, "").trim());
+            }
+            continue;
+          }
+
+          // Content
+          if (currentNote) {
+            currentNote.content += (currentNote.content ? " " : "") + line;
+          }
+        }
+
+        if (currentNote) notes.push(currentNote);
+      }
+
+      function createParsedNote(title, type, preset, effect, attach, idx) {
+        return {
+          id: `note-${Date.now()}-${idx}`,
+          type,
+          title,
+          content: "",
+          bullets: [],
+          preset,
+          effect,
+          attach,
+          font: CONFIG.defaultFont,
+          fontSize: "base",
+          rotation: CONFIG.rotation ? Math.random() * 6 - 3 : 0,
+          width: "auto",
+          timestamp: new Date().toISOString(),
+        };
+      }
+
+      function debounceRender() {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          const text = document.getElementById("inputText").value;
+          notes = [];
+          parseText(text);
+          renderNotes();
+        }, 400);
+      }
+
+      /* ============================================
+           UTILITY FUNCTIONS
+           ============================================ */
+
+      function updateStats() {
+        const text = document.getElementById("inputText").value;
+        document.getElementById("statCards").textContent = notes.length;
+        document.getElementById("statWords").textContent = text.trim()
+          ? text.trim().split(/\s+/).length
+          : 0;
+        document.getElementById("statChars").textContent = text.length;
+        document.getElementById(
+          "statQuality"
+        ).textContent = `${CONFIG.quality}x`;
+      }
+
+      function escapeHTML(text) {
+        if (!text) return "";
+        const div = document.createElement("div");
+        div.textContent = text;
+        return div.innerHTML;
+      }
+
+      function toast(msg) {
+        const t = document.getElementById("toast");
+        document.getElementById("toastMsg").textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), 3000);
+      }
+
+      function log(type, msg) {
+        const colors = {
+          READY: "text-emerald-400",
+          CREATE: "text-cyan-400",
+          DELETE: "text-red-400",
+          DOWNLOAD: "text-yellow-400",
+          SUCCESS: "text-green-400",
+          ERROR: "text-red-500",
+          IMPORT: "text-purple-400",
+          SETTINGS: "text-pink-400",
+        };
+        const logEl = document.getElementById("activityLog");
+        const entry = document.createElement("div");
+        entry.className = colors[type] || "text-zinc-400";
+        entry.textContent = `[${type}] ${msg}`;
+        logEl.insertBefore(entry, logEl.firstChild);
+        while (logEl.children.length > 20) logEl.removeChild(logEl.lastChild);
+      }
+
+      function insertTemplate(type) {
+        const templates = {
+          day: "\n\nDay X – Title\n",
+          law: "\n\nLaw X: Your Law Title\n",
+          meaning: "Meaning: Your explanation here...\n",
+          example: "Example: Real-world scenario...\n",
+          impact: "Positive Impact: Benefits here...\n",
+          takeaway: "\n\nTakeaway:\n- Point 1\n- Point 2\n- Point 3\n",
+        };
+        const ta = document.getElementById("inputText");
+        const pos = ta.selectionStart;
+        ta.value =
+          ta.value.slice(0, pos) + templates[type] + ta.value.slice(pos);
+        ta.focus();
+        debounceRender();
+      }
+
+      function loadExample() {
+        document.getElementById("inputText").value = `Day 1 – Laws 1 to 3
+
+Law 1: Never Outshine the Master 👑
+Meaning: Apne boss, senior ya leader ko kabhi bhi overshadow mat karo.
+Example: Agar office me aap kisi meeting me boss se zyada ideas present karte ho, wo jealous ho sakte hain.
+Positive Impact: Aap respected rahoge, aur leaders ke trust me rahoge.
+
+Law 2: Never Put Too Much Trust in Friends 🤝
+Meaning: Friends kabhi kabhi aapko betray kar sakte hain, enemies se benefit lena zyada strategic ho sakta hai.
+Example: Agar koi competitor aapke project me help offer kare, uska use knowledge gain karne ke liye karo.
+Positive Impact: Aap zyada cautious aur strategic banoge.
+
+Law 3: Conceal Your Intentions 🎭
+Meaning: Apni asli plans aur goals sabke saamne mat rakho.
+Example: Agar aap promotion ke liye secretly prepare kar rahe ho, openly discuss na karo.
+Positive Impact: Aapke plans secure rahenge, advantage milega.
+
+Day 1 Takeaway 🎯
+- Leaders aur authority ke respect me rahna sikho.
+- Trust wisely, friends aur enemies ko strategically handle karo.
+- Apne intentions hide karke advantage banao.`;
+
+        debounceRender();
+        toast("📄 Example loaded!");
+      }
+
+      function clearAll() {
+        if (!confirm("Clear all notes?")) return;
+        document.getElementById("inputText").value = "";
+        notes = [];
+        renderNotes();
+        toast("🗑️ All cleared");
+      }
+
+      /* ============================================
+           EXPORT / IMPORT
+           ============================================ */
+
+      function exportData() {
+        const data = {
+          config: CONFIG,
+          notes: notes,
+          exportedAt: new Date().toISOString(),
+          version: "6.0",
+        };
+        const blob = new Blob([JSON.stringify(data, null, 2)], {
+          type: "application/json",
+        });
+        const link = document.createElement("a");
+        link.download = `${CONFIG.username}-export-${Date.now()}.json`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        toast("💾 Data exported!");
+      }
+
+      function importData(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const data = JSON.parse(e.target.result);
+            if (data.config) CONFIG = { ...CONFIG, ...data.config };
+            if (data.notes) notes = data.notes;
+            renderNotes();
+            toast("📂 Data imported!");
+            log("IMPORT", "Data restored");
+          } catch (err) {
+            toast("❌ Invalid file");
+          }
+        };
+        reader.readAsText(file);
+        event.target.value = "";
+      }
+
+      /* ============================================
+           SETTINGS
+           ============================================ */
+
+      function saveSettings() {
+        CONFIG.author = document.getElementById("setAuthor").value;
+        CONFIG.username = document.getElementById("setUsername").value;
+        CONFIG.quality = parseInt(document.getElementById("setQuality").value);
+        CONFIG.columns = parseInt(document.getElementById("setColumns").value);
+        CONFIG.exportBg = document.getElementById("setExportBg").value;
+        CONFIG.watermark = document.getElementById("setWatermark").checked;
+        CONFIG.rotation = document.getElementById("setRotation").checked;
+        CONFIG.defaultFont = document.getElementById("setDefaultFont").value;
+        CONFIG.defaultEffect =
+          document.getElementById("setDefaultEffect").value;
+
+        localStorage.setItem("stickyNotesConfig", JSON.stringify(CONFIG));
+        renderNotes();
+        updateStats();
+        toast("✅ Settings saved!");
+      }
+
+      function loadSettings() {
+        const saved = localStorage.getItem("stickyNotesConfig");
+        if (saved) {
+          try {
+            CONFIG = { ...CONFIG, ...JSON.parse(saved) };
+          } catch (e) {}
+        }
+      }
+
+      function resetSettings() {
+        if (!confirm("Reset all settings?")) return;
+        CONFIG = {
+          author: "Sudhir Kumar",
+          username: "SudhirDevOps1",
+          quality: 3,
+          columns: 2,
+          exportBg: "#0a0a0f",
+          watermark: true,
+          rotation: true,
+          defaultFont: "inter",
+          defaultEffect: "fold",
+        };
+        localStorage.removeItem("stickyNotesConfig");
+        closeModal("settingsModal");
+        renderNotes();
+        toast("🔄 Settings reset!");
+      }
+
+      /* ============================================
+           KEYBOARD SHORTCUTS & EVENTS
+           ============================================ */
+
+      document.addEventListener("keydown", (e) => {
+        if (e.ctrlKey || e.metaKey) {
+          switch (e.key.toLowerCase()) {
+            case "n":
+              e.preventDefault();
+              openCreateModal();
+              break;
+            case "j":
+              e.preventDefault();
+              openJSONModal();
+              break;
+            case "d":
+              e.preventDefault();
+              downloadAllCards();
+              break;
+            case "l":
+              e.preventDefault();
+              loadExample();
+              break;
+          }
+        }
+        if (e.key === "Escape") {
+          closeModal("createModal");
+          closeModal("jsonModal");
+          closeModal("presetsModal");
+          closeModal("settingsModal");
+        }
+      });
+
+      document.querySelectorAll(".modal").forEach((modal) => {
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) closeModal(modal.id);
+        });
+      });
+    </script>
+  </body>
+</html>

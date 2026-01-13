@@ -1,0 +1,100 @@
+{
+  "notes": [
+    {
+      "id": "auto-generated",
+      "type": "day",
+      "title": "Day 1 – Atomic Habits",
+      "content": "Atomic Habits book ka start. Aaj ka focus hai chhoti habits aur daily consistency.",
+      "bullets": [],
+      "preset": "orange",
+      "attach": "pin",
+      "font": "hindi",
+      "fontSize": "base",
+      "rotation": -1,
+      "width": "auto",
+      "showFold": true,
+      "timestamp": "auto"
+    },
+    {
+      "id": "auto-generated",
+      "type": "law",
+      "title": "System over Goal Rule",
+      "content": "Success ya failure goal se nahi, system se decide hota hai.",
+      "bullets": [],
+      "preset": "yellow",
+      "attach": "tape",
+      "font": "hindi",
+      "fontSize": "base",
+      "rotation": 0.5,
+      "width": "auto",
+      "showFold": true,
+      "timestamp": "auto"
+    },
+    {
+      "id": "auto-generated",
+      "type": "meaning",
+      "title": "Meaning",
+      "content": "Goal sirf direction deta hai. Roz ka routine aur habit decide karti hai ki tum goal tak pahunchoge ya nahi. Strong system ho to result apne aap aata hai.",
+      "bullets": [],
+      "preset": "blue",
+      "attach": "tape",
+      "font": "hindi",
+      "fontSize": "base",
+      "rotation": 0.6,
+      "width": "auto",
+      "showFold": true,
+      "timestamp": "auto"
+    },
+    {
+      "id": "auto-generated",
+      "type": "example",
+      "title": "Example",
+      "content": "2 students ka goal same hai top marks. Ek roz 30 min padhta hai, dusra exam se pehle. Jeet wahi jata hai jo daily padhta hai. Goal same, system alag.",
+      "bullets": [],
+      "preset": "green",
+      "attach": "tape",
+      "font": "hindi",
+      "fontSize": "base",
+      "rotation": 1.2,
+      "width": "auto",
+      "showFold": true,
+      "timestamp": "auto"
+    },
+    {
+      "id": "auto-generated",
+      "type": "impact",
+      "title": "Positive Impact",
+      "content": "Chhoti habits follow karne se pressure kam hota hai. Motivation ka wait nahi karna padta. Discipline aur confidence dheere-dheere build hota hai.",
+      "bullets": [],
+      "preset": "pink",
+      "attach": "tape",
+      "font": "hindi",
+      "fontSize": "base",
+      "rotation": -0.4,
+      "width": "auto",
+      "showFold": true,
+      "timestamp": "auto"
+    },
+    {
+      "id": "auto-generated",
+      "type": "day",
+      "title": "Takeaway 🎯",
+      "content": "",
+      "bullets": [
+        "Goal se zyada system important hai",
+        "Roz ka chhota kaam bada result deta hai",
+        "Consistency hi real power hai"
+      ],
+      "preset": "orange",
+      "attach": "pin",
+      "font": "hindi",
+      "fontSize": "base",
+      "rotation": -0.5,
+      "width": "auto",
+      "showFold": true,
+      "timestamp": "auto"
+    }
+  ],
+  "author": "@sk",
+  "version": "5.0"
+}
