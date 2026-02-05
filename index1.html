@@ -1,0 +1,1799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📝 Sticky Notes Pro v6.0 - Ultimate Sticky Notes Card Creator</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800;900&family=Kalam:wght@400;700&family=Pacifico&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #f59e0b;
+            --primary-dark: #d97706;
+            --secondary: #ec4899;
+            --accent: #8b5cf6;
+            --success: #22c55e;
+            --info: #06b6d4;
+            --bg-dark: #0f0f17;
+            --bg-card: #1a1a24;
+            --bg-card-hover: #222230;
+            --border-color: rgba(245, 158, 11, 0.3);
+            --text-primary: #f8fafc;
+            --text-secondary: #a1a1aa;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        *::-webkit-scrollbar { width: 10px; }
+        *::-webkit-scrollbar-track { background: var(--bg-dark); }
+        *::-webkit-scrollbar-thumb { 
+            background: linear-gradient(180deg, var(--primary), var(--secondary)); 
+            border-radius: 5px; 
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        
+        .font-mono { font-family: 'Fira Code', monospace; }
+        .font-handwriting { font-family: 'Kalam', cursive; }
+        .font-decorative { font-family: 'Pacifico', cursive; }
+        
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: radial-gradient(ellipse at top, #1f1a0f 0%, #0f0f17 50%, #0f1219 100%);
+        }
+        
+        .bg-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.4;
+            animation: floatOrb 20s ease-in-out infinite;
+        }
+        
+        .bg-orb-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--primary);
+            top: -150px;
+            left: -150px;
+        }
+        
+        .bg-orb-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--secondary);
+            bottom: -100px;
+            right: -100px;
+            animation-delay: -10s;
+        }
+        
+        .bg-orb-3 {
+            width: 300px;
+            height: 300px;
+            background: var(--accent);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -5s;
+            opacity: 0.2;
+        }
+        
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(50px, 50px) scale(1.1); }
+            50% { transform: translate(-30px, 80px) scale(0.95); }
+            75% { transform: translate(40px, -40px) scale(1.05); }
+        }
+        
+        /* Rainbow Line */
+        .rainbow-line {
+            height: 3px;
+            background: linear-gradient(90deg, #f59e0b, #ec4899, #8b5cf6, #06b6d4, #22c55e, #f59e0b);
+            background-size: 200% 100%;
+            animation: rainbowSlide 3s linear infinite;
+            border-radius: 2px;
+        }
+        
+        @keyframes rainbowSlide {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #f59e0b, #ec4899, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Navigation */
+        .navbar {
+            backdrop-filter: blur(20px);
+            background: rgba(15, 15, 23, 0.9);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        
+        .nav-link {
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+            background: rgba(245, 158, 11, 0.1);
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .card:hover {
+            border-color: var(--primary);
+            background: var(--bg-card-hover);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(245, 158, 11, 0.15);
+        }
+        
+        /* Sticky Note Cards Demo */
+        .sticky-note {
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            transform: rotate(var(--rotation, 0deg));
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .sticky-note:hover {
+            transform: rotate(0deg) scale(1.05);
+            z-index: 10;
+        }
+        
+        .sticky-yellow { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color: #78350f; }
+        .sticky-pink { background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%); color: #831843; }
+        .sticky-blue { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); color: #1e3a8a; }
+        .sticky-green { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); color: #14532d; }
+        .sticky-purple { background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); color: #4c1d95; }
+        
+        .sticky-note::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 0 0 4px 4px;
+        }
+        
+        /* Tables */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(26, 26, 36, 0.8);
+        }
+        
+        .styled-table th {
+            background: linear-gradient(90deg, rgba(245, 158, 11, 0.2), rgba(236, 72, 153, 0.1));
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        .styled-table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.1);
+            color: var(--text-secondary);
+        }
+        
+        .styled-table tbody tr:hover {
+            background: rgba(245, 158, 11, 0.08);
+        }
+        
+        .styled-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Code Blocks */
+        .code-block {
+            background: linear-gradient(135deg, #1e1b2e, #0f172a);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Fira Code', monospace;
+        }
+        
+        .code-block::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+        
+        /* Terminal Box */
+        .terminal-box {
+            background: #0d0d0d;
+            border: 1px solid #333;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+        
+        .terminal-header {
+            background: linear-gradient(90deg, #1f1f1f, #2a2a2a);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .terminal-body {
+            padding: 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            color: #a0a0a0;
+            line-height: 1.8;
+        }
+        
+        /* Badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            gap: 6px;
+        }
+        
+        /* Feature Icon */
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            font-size: 32px;
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(236, 72, 153, 0.1));
+            border: 2px solid var(--border-color);
+            flex-shrink: 0;
+        }
+        
+        /* Step Number */
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+        
+        /* Keyboard Key */
+        .kbd {
+            background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+            border: 1px solid #444;
+            border-bottom: 3px solid #333;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-family: 'Fira Code', monospace;
+            font-size: 12px;
+            color: #e0e0e0;
+            display: inline-block;
+            box-shadow: 0 2px 0 #111;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(245, 158, 11, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(30, 30, 40, 0.8);
+            border: 2px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        /* Copy Button */
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(100, 100, 120, 0.5);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            color: white;
+            font-weight: 500;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary);
+        }
+        
+        /* Accordion/Details */
+        details {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            overflow: hidden;
+        }
+        
+        details summary {
+            padding: 18px 24px;
+            cursor: pointer;
+            background: rgba(245, 158, 11, 0.05);
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        details summary::-webkit-details-marker { display: none; }
+        
+        details summary::after {
+            content: '+';
+            margin-left: auto;
+            font-size: 22px;
+            font-weight: 400;
+            color: var(--primary);
+            transition: transform 0.3s;
+        }
+        
+        details[open] summary::after { transform: rotate(45deg); }
+        
+        details summary:hover {
+            background: rgba(245, 158, 11, 0.12);
+        }
+        
+        details[open] summary {
+            border-bottom: 1px solid var(--border-color);
+            color: var(--primary);
+        }
+        
+        details > div {
+            padding: 20px 24px;
+            color: var(--text-secondary);
+        }
+        
+        /* Section Title */
+        .section-title {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+        }
+        
+        .section-title span { font-size: 40px; }
+        
+        /* Color Preset Grid */
+        .color-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 12px;
+        }
+        
+        .color-swatch {
+            height: 60px;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            padding-bottom: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .color-swatch:hover {
+            transform: scale(1.1);
+            border-color: white;
+        }
+        
+        /* Effect Card */
+        .effect-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .effect-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.2);
+        }
+        
+        .effect-card .icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        /* TOC Link */
+        .toc-link {
+            display: block;
+            padding: 10px 14px;
+            color: var(--text-secondary);
+            border-radius: 8px;
+            transition: all 0.3s;
+            border-left: 3px solid transparent;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .toc-link:hover {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--primary);
+            border-left-color: var(--primary);
+        }
+        
+        /* Back to Top */
+        #backToTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 1000;
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.5);
+        }
+        
+        #backToTop.visible { opacity: 1; visibility: visible; }
+        #backToTop:hover { transform: translateY(-5px); }
+        
+        /* Animations */
+        .animate-float {
+            animation: floatElement 3s ease-in-out infinite;
+        }
+        
+        @keyframes floatElement {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        .animate-pulse-glow {
+            animation: pulseGlow 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(245, 158, 11, 0.7), 0 0 60px rgba(236, 72, 153, 0.3); }
+        }
+        
+        /* Status Check */
+        .status-check { color: var(--success); font-weight: 600; }
+        
+        /* Version Badge */
+        .version-badge {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        /* Highlight Card */
+        .highlight-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+        
+        .highlight-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .section-title { font-size: 28px; }
+            .section-title span { font-size: 32px; }
+            .hide-mobile { display: none; }
+            .sticky-notes-demo { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-orb bg-orb-1"></div>
+        <div class="bg-orb bg-orb-2"></div>
+        <div class="bg-orb bg-orb-3"></div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <span class="text-3xl">📝</span>
+                <span class="font-bold text-xl gradient-text hide-mobile">Sticky Notes Pro</span>
+                <span class="version-badge">v6.0</span>
+            </div>
+            <div class="flex items-center gap-2">
+                <a href="#features" class="nav-link hide-mobile">Features</a>
+                <a href="#effects" class="nav-link hide-mobile">Effects</a>
+                <a href="#installation" class="nav-link hide-mobile">Install</a>
+                <a href="https://github.com/SudhirDevOps1" target="_blank" class="btn-secondary text-sm ml-2">
+                    <i class="fab fa-github"></i>
+                    <span class="hide-mobile">GitHub</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-24">
+        <!-- Hero Section -->
+        <section class="py-16 px-6">
+            <div class="max-w-5xl mx-auto text-center">
+                <!-- Header Banner -->
+                <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25&height=180&section=header&text=📝%20Sticky%20Notes%20Pro&fontSize=42&fontColor=fff&animation=twinkling&fontAlignY=32&desc=Ultimate%20Sticky%20Notes%20Card%20Creator&descAlignY=52&descSize=18" 
+                     class="w-full rounded-2xl mb-10 shadow-2xl" alt="Header"/>
+                
+                <!-- Badges Row 1 -->
+                <div class="flex flex-wrap justify-center gap-3 mb-4">
+                    <img src="https://img.shields.io/badge/Version-6.0-brightgreen?style=for-the-badge" alt="Version"/>
+                    <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5"/>
+                    <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3"/>
+                    <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript"/>
+                </div>
+                
+                <!-- Badges Row 2 -->
+                <div class="flex flex-wrap justify-center gap-3 mb-10">
+                    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind"/>
+                    <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License"/>
+                    <img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" alt="Status"/>
+                </div>
+                
+                <!-- Typing Animation -->
+                <div class="mb-10">
+                    <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=F59E0B&center=true&vCenter=true&multiline=true&random=false&width=700&height=80&lines=🎴+18+Card+Effects+%7C+📋+JSON+Import;🎨+28+Color+Presets+%7C+📎+15+Attachments+%7C+🔤+18+Fonts" alt="Typing SVG" class="mx-auto max-w-full" />
+                </div>
+                
+                <div class="rainbow-line max-w-2xl mx-auto mb-10"></div>
+                
+                <h2 class="text-2xl font-bold text-gray-200 mb-4">🚀 Ultimate Sticky Notes Card Creator with 18 Card Effects & JSON Import</h2>
+                <p class="text-xl text-gray-400 mb-8">Transform your text into stunning sticky note cards with realistic effects!</p>
+                
+                <!-- Sticky Notes Demo -->
+                <div class="flex flex-wrap justify-center gap-6 mb-12 sticky-notes-demo">
+                    <div class="sticky-note sticky-yellow" style="--rotation: -3deg; width: 160px;">
+                        <div class="font-handwriting text-lg font-bold mb-2">📄 Fold Effect</div>
+                        <div class="text-sm">Classic corner fold with shadow</div>
+                    </div>
+                    <div class="sticky-note sticky-pink" style="--rotation: 2deg; width: 160px;">
+                        <div class="font-handwriting text-lg font-bold mb-2">🌊 Curved</div>
+                        <div class="text-sm">Lifted curved shadow</div>
+                    </div>
+                    <div class="sticky-note sticky-blue" style="--rotation: -1deg; width: 160px;">
+                        <div class="font-handwriting text-lg font-bold mb-2">📓 Notebook</div>
+                        <div class="text-sm">Lined paper style</div>
+                    </div>
+                    <div class="sticky-note sticky-green" style="--rotation: 3deg; width: 160px;">
+                        <div class="font-handwriting text-lg font-bold mb-2">📸 Polaroid</div>
+                        <div class="text-sm">Photo frame style</div>
+                    </div>
+                    <div class="sticky-note sticky-purple" style="--rotation: -2deg; width: 160px;">
+                        <div class="font-handwriting text-lg font-bold mb-2">💡 Neon</div>
+                        <div class="text-sm">Neon glow effect</div>
+                    </div>
+                </div>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-wrap justify-center gap-4 mt-8">
+                    <a href="#installation" class="btn-primary animate-pulse-glow">
+                        <i class="fas fa-download"></i> Get Started
+                    </a>
+                    <a href="#features" class="btn-secondary">
+                        <i class="fas fa-star"></i> Explore Features
+                    </a>
+                    <a href="#effects" class="btn-secondary">
+                        <i class="fas fa-magic"></i> View Effects
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- What's New Section -->
+        <section class="py-12 px-6" id="whats-new">
+            <div class="max-w-5xl mx-auto">
+                <div class="card p-8">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                        <span>🆕</span> What's New in v6.0
+                    </h2>
+                    <div class="grid md:grid-cols-5 gap-4">
+                        <div class="highlight-card">
+                            <div class="text-3xl mb-2">✨</div>
+                            <div class="font-bold text-white">18 Effects</div>
+                            <div class="text-sm text-gray-400">Card Styles</div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="text-3xl mb-2">📋</div>
+                            <div class="font-bold text-white">JSON Paste</div>
+                            <div class="text-sm text-gray-400">Direct Import</div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="text-3xl mb-2">🎨</div>
+                            <div class="font-bold text-white">28 Colors</div>
+                            <div class="text-sm text-gray-400">Presets</div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="text-3xl mb-2">📎</div>
+                            <div class="font-bold text-white">15 Attachments</div>
+                            <div class="text-sm text-gray-400">Styles</div>
+                        </div>
+                        <div class="highlight-card">
+                            <div class="text-3xl mb-2">🔤</div>
+                            <div class="font-bold text-white">18 Fonts</div>
+                            <div class="text-sm text-gray-400">Including Hindi</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Table of Contents -->
+        <section class="py-12 px-6" id="toc">
+            <div class="max-w-4xl mx-auto">
+                <div class="card p-8">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                        <span>📋</span> Table of Contents
+                    </h2>
+                    <div class="grid md:grid-cols-3 gap-2">
+                        <a href="#overview" class="toc-link">🌟 Overview</a>
+                        <a href="#effects" class="toc-link">🎴 18 Card Effects</a>
+                        <a href="#features" class="toc-link">✨ Features</a>
+                        <a href="#json" class="toc-link">📋 JSON Import/Export</a>
+                        <a href="#installation" class="toc-link">💻 Installation</a>
+                        <a href="#usage" class="toc-link">📖 Usage Guide</a>
+                        <a href="#customization" class="toc-link">⚙️ Customization</a>
+                        <a href="#shortcuts" class="toc-link">⌨️ Keyboard Shortcuts</a>
+                        <a href="#browser" class="toc-link">🌐 Browser Support</a>
+                        <a href="#changelog" class="toc-link">📝 Changelog</a>
+                        <a href="#contributing" class="toc-link">🤝 Contributing</a>
+                        <a href="#author" class="toc-link">👨‍💻 Author</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Overview Section -->
+        <section class="py-20 px-6" id="overview">
+            <div class="max-w-5xl mx-auto">
+                <div class="rainbow-line mb-10"></div>
+                <h2 class="section-title"><span>🌟</span> Overview</h2>
+                
+                <div class="card p-10 mb-12">
+                    <p class="text-xl text-gray-300 leading-relaxed mb-6">
+                        <strong class="text-white">Sticky Notes Pro</strong> is the ultimate web application for creating beautiful, realistic sticky note cards with <strong class="text-yellow-400">18 stunning effects</strong>. Perfect for students, professionals, content creators, and anyone who wants beautiful, shareable note cards!
+                    </p>
+                </div>
+                
+                <!-- Use Cases -->
+                <div class="grid md:grid-cols-5 gap-4 mb-12">
+                    <div class="highlight-card">
+                        <div class="text-4xl mb-3">📚</div>
+                        <h3 class="font-bold text-white mb-1">Students</h3>
+                        <p class="text-sm text-gray-400">Study notes & flashcards</p>
+                    </div>
+                    <div class="highlight-card">
+                        <div class="text-4xl mb-3">👨‍💼</div>
+                        <h3 class="font-bold text-white mb-1">Professionals</h3>
+                        <p class="text-sm text-gray-400">Meeting notes & presentations</p>
+                    </div>
+                    <div class="highlight-card">
+                        <div class="text-4xl mb-3">✍️</div>
+                        <h3 class="font-bold text-white mb-1">Creators</h3>
+                        <p class="text-sm text-gray-400">Social media content</p>
+                    </div>
+                    <div class="highlight-card">
+                        <div class="text-4xl mb-3">📖</div>
+                        <h3 class="font-bold text-white mb-1">Readers</h3>
+                        <p class="text-sm text-gray-400">Book summaries</p>
+                    </div>
+                    <div class="highlight-card">
+                        <div class="text-4xl mb-3">🎯</div>
+                        <h3 class="font-bold text-white mb-1">Anyone</h3>
+                        <p class="text-sm text-gray-400">Beautiful note cards</p>
+                    </div>
+                </div>
+                
+                <!-- Why Sticky Notes Pro -->
+                <h3 class="text-2xl font-bold text-white mb-6 text-center">Why Sticky Notes Pro v6.0?</h3>
+                <table class="styled-table">
+                    <thead>
+                        <tr><th>Feature</th><th>Benefit</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><strong>🎴 18 Card Effects</strong></td><td>Fold, Curved, Torn, Stacked, Notebook, Polaroid & more</td></tr>
+                        <tr><td><strong>📋 JSON Import</strong></td><td>Paste JSON directly to import multiple notes</td></tr>
+                        <tr><td><strong>🎨 28 Color Presets</strong></td><td>Match any brand or mood</td></tr>
+                        <tr><td><strong>📎 15 Attachment Styles</strong></td><td>Realistic tape, pins, clips, and more</td></tr>
+                        <tr><td><strong>🔤 18 Fonts (incl. Hindi)</strong></td><td>Perfect typography for any language</td></tr>
+                        <tr><td><strong>📥 High-Quality Export</strong></td><td>Up to 5x resolution PNG images</td></tr>
+                        <tr><td><strong>📱 Fully Responsive</strong></td><td>Works on any device</td></tr>
+                        <tr><td><strong>🌙 Dark Terminal Theme</strong></td><td>Easy on the eyes</td></tr>
+                        <tr><td><strong>⚡ Zero Backend</strong></td><td>100% client-side, privacy-first</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 18 Card Effects Section -->
+        <section class="py-20 px-6" id="effects">
+            <div class="max-w-6xl mx-auto">
+                <div class="rainbow-line mb-10"></div>
+                <h2 class="section-title"><span>🎴</span> 18 Card Effects</h2>
+                
+                <!-- Effects Grid -->
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
+                    <div class="effect-card">
+                        <div class="icon">📄</div>
+                        <div class="font-bold text-white">Fold</div>
+                        <div class="text-xs text-gray-400">Corner fold</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">🌊</div>
+                        <div class="font-bold text-white">Curved</div>
+                        <div class="text-xs text-gray-400">Lifted shadow</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">📃</div>
+                        <div class="font-bold text-white">Torn</div>
+                        <div class="text-xs text-gray-400">Ripped edges</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">📚</div>
+                        <div class="font-bold text-white">Stacked</div>
+                        <div class="text-xs text-gray-400">Layered copies</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">📓</div>
+                        <div class="font-bold text-white">Notebook</div>
+                        <div class="text-xs text-gray-400">Lined paper</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">📸</div>
+                        <div class="font-bold text-white">Polaroid</div>
+                        <div class="text-xs text-gray-400">Photo frame</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">✉️</div>
+                        <div class="font-bold text-white">Postcard</div>
+                        <div class="text-xs text-gray-400">With stamp</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">🎯</div>
+                        <div class="font-bold text-white">3D Lifted</div>
+                        <div class="text-xs text-gray-400">Shadow layers</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">📋</div>
+                        <div class="font-bold text-white">Taped</div>
+                        <div class="text-xs text-gray-400">Double tape</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">🎟️</div>
+                        <div class="font-bold text-white">Ticket</div>
+                        <div class="text-xs text-gray-400">Perforated</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">📮</div>
+                        <div class="font-bold text-white">Stamp</div>
+                        <div class="text-xs text-gray-400">Dashed border</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">📌</div>
+                        <div class="font-bold text-white">Pinned</div>
+                        <div class="text-xs text-gray-400">Cork board</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">🎀</div>
+                        <div class="font-bold text-white">Washi</div>
+                        <div class="text-xs text-gray-400">Decorative tape</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">🌈</div>
+                        <div class="font-bold text-white">Gradient</div>
+                        <div class="text-xs text-gray-400">Border glow</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">⬜</div>
+                        <div class="font-bold text-white">Minimal</div>
+                        <div class="text-xs text-gray-400">Clean style</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">💡</div>
+                        <div class="font-bold text-white">Neon</div>
+                        <div class="text-xs text-gray-400">Glow effect</div>
+                    </div>
+                    <div class="effect-card">
+                        <div class="icon">🪟</div>
+                        <div class="font-bold text-white">Glass</div>
+                        <div class="text-xs text-gray-400">Glassmorphism</div>
+                    </div>
+                </div>
+                
+                <!-- Effect CSS Classes -->
+                <div class="terminal-box">
+                    <div class="terminal-header">
+                        <div class="terminal-dot bg-red-500"></div>
+                        <div class="terminal-dot bg-yellow-500"></div>
+                        <div class="terminal-dot bg-green-500"></div>
+                        <span class="ml-4 text-gray-300 font-semibold">Effect CSS Classes</span>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div>
+                                <p class="text-yellow-400">.effect-fold</p>
+                                <p class="text-yellow-400">.effect-curved</p>
+                                <p class="text-yellow-400">.effect-torn</p>
+                                <p class="text-yellow-400">.effect-stacked</p>
+                                <p class="text-yellow-400">.effect-notebook</p>
+                                <p class="text-yellow-400">.effect-polaroid</p>
+                            </div>
+                            <div>
+                                <p class="text-pink-400">.effect-postcard</p>
+                                <p class="text-pink-400">.effect-3d</p>
+                                <p class="text-pink-400">.effect-taped</p>
+                                <p class="text-pink-400">.effect-ticket</p>
+                                <p class="text-pink-400">.effect-stamp</p>
+                                <p class="text-pink-400">.effect-cork</p>
+                            </div>
+                            <div>
+                                <p class="text-purple-400">.effect-washi</p>
+                                <p class="text-purple-400">.effect-gradient</p>
+                                <p class="text-purple-400">.effect-minimal</p>
+                                <p class="text-purple-400">.effect-neon</p>
+                                <p class="text-purple-400">.effect-glass</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-20 px-6" id="features">
+            <div class="max-w-6xl mx-auto">
+                <div class="rainbow-line mb-10"></div>
+                <h2 class="section-title"><span>✨</span> Features</h2>
+
+                <!-- 28 Color Presets -->
+                <div class="card p-8 mb-8">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span>🎨</span> 28 Color Presets
+                    </h3>
+                    <div class="color-grid">
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #78350f;">Yellow</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #831843;">Pink</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e3a8a;">Blue</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #dcfce7, #bbf7d0); color: #14532d;">Green</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #4c1d95;">Purple</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #ffedd5, #fed7aa); color: #7c2d12;">Orange</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #cffafe, #a5f3fc); color: #155e75;">Cyan</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #ffe4e6, #fecdd3); color: #881337;">Rose</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #ecfccb, #d9f99d); color: #3f6212;">Lime</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #fef3c7, #fde68a); color: #78350f;">Amber</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #ccfbf1, #99f6e4); color: #115e59;">Teal</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #3730a3;">Indigo</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #fae8ff, #f5d0fe); color: #701a75;">Fuchsia</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #e0f2fe, #bae6fd); color: #0c4a6e;">Sky</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #064e3b;">Emerald</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #ede9fe, #c4b5fd); color: #4c1d95;">Violet</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #fef3c7, #fca5a5); color: #7c2d12;">Sunset</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #cffafe, #bfdbfe); color: #0369a1;">Ocean</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #dcfce7, #a7f3d0); color: #166534;">Forest</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #f3e8ff, #e9d5ff); color: #6b21a8;">Lavender</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #fff1f2, #fecdd3); color: #be123c;">Peach</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #d1fae5, #bbf7d0); color: #047857;">Mint</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #fffbeb, #fef3c7); color: #92400e;">Cream</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #f1f5f9, #e2e8f0); color: #334155;">Slate</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #fee2e2, #fecaca); color: #991b1b;">Red</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #fef3c7, #fcd34d); color: #78350f;">Gold</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #1e1e2e, #2d2d44); color: #e0e0e0;">Dark</div>
+                        <div class="color-swatch" style="background: linear-gradient(135deg, #0f0f1a, #1a1a2e); color: #22d3ee; box-shadow: 0 0 15px #22d3ee;">Neon</div>
+                    </div>
+                </div>
+
+                <!-- 15 Attachment Styles -->
+                <div class="card p-8 mb-8">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span>📎</span> 15 Attachment Styles
+                    </h3>
+                    <table class="styled-table">
+                        <thead>
+                            <tr><th>Style</th><th>Description</th><th>Style</th><th>Description</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>📋 Tape</strong></td><td>Classic center tape</td>
+                                <td><strong>📐 Tape Corner</strong></td><td>Angled corner tape</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📎 Tape Double</strong></td><td>Two tape strips</td>
+                                <td><strong>📌 Red Pin</strong></td><td>Classic red pushpin</td>
+                            </tr>
+                            <tr>
+                                <td><strong>🔶 Gold Pin</strong></td><td>Elegant gold pin</td>
+                                <td><strong>🔷 Blue Pin</strong></td><td>Cool blue pin</td>
+                            </tr>
+                            <tr>
+                                <td><strong>🟢 Green Pin</strong></td><td>Fresh green pin</td>
+                                <td><strong>🔗 Silver Clip</strong></td><td>Paper clip</td>
+                            </tr>
+                            <tr>
+                                <td><strong>✨ Gold Clip</strong></td><td>Premium gold clip</td>
+                                <td><strong>💗 Rose Clip</strong></td><td>Rose gold clip</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📍 Staple</strong></td><td>Office staple</td>
+                                <td><strong>🧲 Magnet</strong></td><td>Fridge magnet style</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📒 Binder</strong></td><td>Side binder clip</td>
+                                <td><strong>🧵 String</strong></td><td>Hanging string</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📄 None</strong></td><td>Clean, no attachment</td>
+                                <td></td><td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 18 Font Families -->
+                <div class="card p-8 mb-8">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span>🔤</span> 18 Font Families
+                    </h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div>
+                            <h4 class="text-yellow-400 font-bold mb-3">Standard Fonts</h4>
+                            <ul class="space-y-2 text-gray-300">
+                                <li>• Inter (Default)</li>
+                                <li>• Poppins</li>
+                                <li>• JetBrains Mono</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-pink-400 font-bold mb-3">Hindi/Devanagari 🇮🇳</h4>
+                            <ul class="space-y-2 text-gray-300">
+                                <li>• Noto Sans Devanagari</li>
+                                <li>• Tiro Devanagari Hindi</li>
+                                <li>• Mukta</li>
+                                <li>• Hind</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 class="text-purple-400 font-bold mb-3">Handwriting ✍️</h4>
+                            <ul class="space-y-2 text-gray-300">
+                                <li>• Kalam</li>
+                                <li>• Caveat</li>
+                                <li>• Patrick Hand</li>
+                                <li>• Shadows Into Light</li>
+                                <li>• Indie Flower</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <h4 class="text-cyan-400 font-bold mb-3">Decorative Fonts 🎨</h4>
+                        <div class="flex flex-wrap gap-3">
+                            <span class="badge bg-gray-800 text-gray-300">Pacifico</span>
+                            <span class="badge bg-gray-800 text-gray-300">Dancing Script</span>
+                            <span class="badge bg-gray-800 text-gray-300">Satisfy</span>
+                            <span class="badge bg-gray-800 text-gray-300">Great Vibes</span>
+                            <span class="badge bg-gray-800 text-gray-300">Sacramento</span>
+                            <span class="badge bg-gray-800 text-gray-300">Comic Neue</span>
+                            <span class="badge bg-gray-800 text-gray-300">Architects Daughter</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note Types -->
+                <div class="card p-8">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                        <span>📝</span> Note Types
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
+                        <div class="bg-gray-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">📝</div>
+                            <div class="text-sm font-bold text-white">General</div>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">⚖️</div>
+                            <div class="text-sm font-bold text-white">Law/Rule</div>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">💡</div>
+                            <div class="text-sm font-bold text-white">Meaning</div>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">📌</div>
+                            <div class="text-sm font-bold text-white">Example</div>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">✨</div>
+                            <div class="text-sm font-bold text-white">Impact</div>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">🎯</div>
+                            <div class="text-sm font-bold text-white">Takeaway</div>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">💬</div>
+                            <div class="text-sm font-bold text-white">Quote</div>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">⚠️</div>
+                            <div class="text-sm font-bold text-white">Warning</div>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">💭</div>
+                            <div class="text-sm font-bold text-white">Idea</div>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-3 text-center">
+                            <div class="text-2xl mb-1">❓</div>
+                            <div class="text-sm font-bold text-white">Question</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- JSON Import/Export Section -->
+        <section class="py-20 px-6" id="json">
+            <div class="max-w-5xl mx-auto">
+                <div class="rainbow-line mb-10"></div>
+                <h2 class="section-title"><span>📋</span> JSON Import/Export</h2>
+                
+                <div class="card p-8 mb-8">
+                    <h3 class="text-xl font-bold text-white mb-4">🆕 Direct JSON Paste Feature</h3>
+                    <p class="text-gray-300 mb-6">Click the <strong class="text-yellow-400">📋 JSON</strong> button to open the JSON Editor and paste notes directly!</p>
+                    
+                    <h4 class="text-lg font-bold text-yellow-400 mb-3">Single Note JSON</h4>
+                    <div class="code-block font-mono text-sm relative mb-6">
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+                        <code class="text-green-400">{
+  "title": "Never Outshine the Master",
+  "content": "Apne boss ko kabhi overshadow mat karo",
+  "bullets": ["Point 1", "Point 2", "Point 3"],
+  "type": "law",
+  "preset": "yellow",
+  "effect": "fold",
+  "attach": "tape",
+  "font": "kalam",
+  "fontSize": "base",
+  "rotation": 2
+}</code>
+                    </div>
+                    
+                    <h4 class="text-lg font-bold text-pink-400 mb-3">Multiple Notes Array</h4>
+                    <div class="code-block font-mono text-sm relative">
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+                        <code class="text-green-400">{
+  "notes": [
+    { "title": "Law 1", "content": "...", "preset": "yellow", "effect": "fold" },
+    { "title": "Law 2", "content": "...", "preset": "blue", "effect": "curved" }
+  ]
+}</code>
+                    </div>
+                </div>
+                
+                <!-- Available JSON Fields -->
+                <div class="card p-8">
+                    <h3 class="text-xl font-bold text-white mb-6">Available JSON Fields</h3>
+                    <table class="styled-table">
+                        <thead>
+                            <tr><th>Field</th><th>Type</th><th>Options</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>title</strong></td><td>String</td><td>Note title</td></tr>
+                            <tr><td><strong>content</strong></td><td>String</td><td>Main content</td></tr>
+                            <tr><td><strong>bullets</strong></td><td>Array</td><td>Bullet points</td></tr>
+                            <tr><td><strong>type</strong></td><td>String</td><td>law, meaning, example, impact, takeaway, quote, tip, warning...</td></tr>
+                            <tr><td><strong>preset</strong></td><td>String</td><td>yellow, pink, blue, green, purple, orange, cyan, rose...</td></tr>
+                            <tr><td><strong>effect</strong></td><td>String</td><td>fold, curved, torn, stacked, notebook, polaroid, neon, glass...</td></tr>
+                            <tr><td><strong>attach</strong></td><td>String</td><td>tape, tape-corner, pin, pin-gold, clip, staple, magnet, none...</td></tr>
+                            <tr><td><strong>font</strong></td><td>String</td><td>inter, poppins, kalam, caveat, pacifico, hindi...</td></tr>
+                            <tr><td><strong>fontSize</strong></td><td>String</td><td>xs, sm, base, lg, xl</td></tr>
+                            <tr><td><strong>rotation</strong></td><td>Number</td><td>-8 to 8 degrees</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Installation Section -->
+        <section class="py-20 px-6" id="installation">
+            <div class="max-w-5xl mx-auto">
+                <div class="rainbow-line mb-10"></div>
+                <h2 class="section-title"><span>💻</span> Installation</h2>
+
+                <!-- Quick Start -->
+                <div class="card p-8 mb-8">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-4">
+                        <span class="step-number">1</span> Quick Start - Direct Use
+                    </h3>
+                    <p class="text-gray-300 text-lg">Simply open <code class="bg-gray-800 px-3 py-1 rounded">index.html</code> in any modern browser!</p>
+                </div>
+
+                <div class="card p-8 mb-8">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-4">
+                        <span class="step-number">2</span> Clone Repository
+                    </h3>
+                    <div class="code-block font-mono relative">
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+                        <code class="text-green-400">git clone https://github.com/SudhirDevOps1/sticky-notes-pro.git
+cd sticky-notes-pro</code>
+                    </div>
+                </div>
+
+                <div class="card p-8 mb-8">
+                    <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-4">
+                        <span class="step-number">3</span> Live Server (Optional)
+                    </h3>
+                    <div class="code-block font-mono relative">
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+                        <code class="text-green-400"># Using Python
+python -m http.server 8000
+
+# Using Node.js
+npx serve .
+
+# Using PHP
+php -S localhost:8000</code>
+                    </div>
+                    <p class="text-gray-400 mt-4">Then visit <code class="bg-gray-800 px-2 py-1 rounded">http://localhost:8000</code></p>
+                </div>
+
+                <!-- CDN Dependencies -->
+                <div class="card p-8">
+                    <h3 class="text-xl font-bold text-white mb-6">📦 CDN Dependencies (Auto-loaded)</h3>
+                    <div class="code-block font-mono text-sm relative">
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+                        <code class="text-green-400">&lt;!-- Tailwind CSS --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"&gt;&lt;/script&gt;
+
+&lt;!-- html2canvas for image export --&gt;
+&lt;script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Google Fonts (18 fonts) --&gt;
+&lt;link href="https://fonts.googleapis.com/css2?family=..." rel="stylesheet"&gt;</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Usage Guide Section -->
+        <section class="py-20 px-6" id="usage">
+            <div class="max-w-5xl mx-auto">
+                <div class="rainbow-line mb-10"></div>
+                <h2 class="section-title"><span>📖</span> Usage Guide</h2>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <!-- Method 1 -->
+                    <div class="card p-6">
+                        <h3 class="text-lg font-bold text-yellow-400 mb-4">📝 Method 1: Text Input</h3>
+                        <p class="text-gray-300 mb-4">Type or paste structured text:</p>
+                        <div class="code-block font-mono text-sm">
+                            <code class="text-gray-300">Day 1 – Laws 1 to 3
+
+Law 1: Never Outshine 👑
+Meaning: Apne boss ko...
+Example: Office meeting...
+Takeaway:
+- Point 1
+- Point 2</code>
+                        </div>
+                    </div>
+                    
+                    <!-- Method 2 -->
+                    <div class="card p-6">
+                        <h3 class="text-lg font-bold text-pink-400 mb-4">🎨 Method 2: Visual Builder</h3>
+                        <ol class="text-gray-300 space-y-2">
+                            <li>1. Click <strong>➕ Create</strong> button</li>
+                            <li>2. <strong>Style Tab:</strong> Choose color, effect</li>
+                            <li>3. <strong>Content Tab:</strong> Add title & content</li>
+                            <li>4. <strong>Advanced Tab:</strong> Pick font, rotation</li>
+                            <li>5. <strong>Preview Tab:</strong> See live preview</li>
+                            <li>6. Click <strong>✅ Add Note</strong></li>
+                        </ol>
+                    </div>
+                    
+                    <!-- Method 3 -->
+                    <div class="card p-6">
+                        <h3 class="text-lg font-bold text-purple-400 mb-4">📋 Method 3: JSON Import</h3>
+                        <ol class="text-gray-300 space-y-2">
+                            <li>1. Click <strong>📋 JSON</strong> button</li>
+                            <li>2. Paste your JSON array</li>
+                            <li>3. Click <strong>📥 Import from JSON</strong></li>
+                            <li>4. Notes are instantly created!</li>
+                        </ol>
+                    </div>
+                    
+                    <!-- Method 4 -->
+                    <div class="card p-6">
+                        <h3 class="text-lg font-bold text-cyan-400 mb-4">🎨 Method 4: Quick Presets</h3>
+                        <p class="text-gray-300 mb-3">Click <strong>🎨 Presets</strong> for one-click styled notes:</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="badge bg-yellow-500/20 text-yellow-400">⚖️ Law Card</span>
+                            <span class="badge bg-blue-500/20 text-blue-400">💡 Meaning</span>
+                            <span class="badge bg-green-500/20 text-green-400">📌 Example</span>
+                            <span class="badge bg-pink-500/20 text-pink-400">✨ Impact</span>
+                            <span class="badge bg-purple-500/20 text-purple-400">🎯 Takeaway</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Keyboard Shortcuts Section -->
+        <section class="py-20 px-6" id="shortcuts">
+            <div class="max-w-4xl mx-auto">
+                <div class="rainbow-line mb-10"></div>
+                <h2 class="section-title"><span>⌨️</span> Keyboard Shortcuts</h2>
+
+                <div class="card p-8">
+                    <table class="styled-table">
+                        <thead>
+                            <tr><th>Shortcut</th><th>Action</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="kbd">Ctrl</span> + <span class="kbd">N</span></td>
+                                <td>Open Create Modal</td>
+                            </tr>
+                            <tr>
+                                <td><span class="kbd">Ctrl</span> + <span class="kbd">J</span></td>
+                                <td>Open JSON Editor 🆕</td>
+                            </tr>
+                            <tr>
+                                <td><span class="kbd">Ctrl</span> + <span class="kbd">D</span></td>
+                                <td>Download All Cards</td>
+                            </tr>
+                            <tr>
+                                <td><span class="kbd">Ctrl</span> + <span class="kbd">L</span></td>
+                                <td>Load Example</td>
+                            </tr>
+                            <tr>
+                                <td><span class="kbd">Escape</span></td>
+                                <td>Close Modal</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customization Section -->
+        <section class="py-20 px-6" id="customization">
+            <div class="max-w-5xl mx-auto">
+                <h2 class="section-title"><span>⚙️</span> Customization</h2>
+
+                <div class="card p-8 mb-8">
+                    <h3 class="text-xl font-bold text-white mb-6">Settings Panel Options</h3>
+                    <table class="styled-table">
+                        <thead>
+                            <tr><th>Setting</th><th>Options</th><th>Default</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><strong>Author Name</strong></td><td>Any text</td><td>Sudhir Kumar</td></tr>
+                            <tr><td><strong>Username</strong></td><td>Any text</td><td>SudhirDevOps1</td></tr>
+                            <tr><td><strong>Image Quality</strong></td><td>1x - 5x</td><td>3x</td></tr>
+                            <tr><td><strong>Cards Per Row</strong></td><td>1 - 3</td><td>2</td></tr>
+                            <tr><td><strong>Export Background</strong></td><td>Color picker</td><td>#0a0a0f</td></tr>
+                            <tr><td><strong>Default Font</strong></td><td>18 fonts</td><td>Inter</td></tr>
+                            <tr><td><strong>Default Effect</strong></td><td>18 effects</td><td>Fold</td></tr>
+                            <tr><td><strong>Show Watermark</strong></td><td>Toggle</td><td>On</td></tr>
+                            <tr><td><strong>Random Rotation</strong></td><td>Toggle</td><td>On</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Config Object -->
+                <div class="card p-8">
+                    <h3 class="text-xl font-bold text-white mb-6">JavaScript Config Object</h3>
+                    <div class="code-block font-mono text-sm relative">
+                        <button class="copy-btn" onclick="copyCode(this)">📋 Copy</button>
+                        <code class="text-green-400">let CONFIG = {
+    author: 'Sudhir Kumar',      // Your name
+    username: 'SudhirDevOps1',   // Your username
+    quality: 3,                   // Export quality (1-5)
+    columns: 2,                   // Cards per row
+    exportBg: '#0a0a0f',         // Export background
+    watermark: true,              // Show watermark
+    rotation: true,               // Random rotation
+    defaultFont: 'inter',         // Default font
+    defaultEffect: 'fold'         // Default card effect
+};</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Browser Support Section -->
+        <section class="py-20 px-6" id="browser">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="section-title"><span>🌐</span> Browser Support</h2>
+
+                <div class="card p-8">
+                    <table class="styled-table">
+                        <thead>
+                            <tr><th>Browser</th><th>Version</th><th>Status</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td><i class="fab fa-chrome text-yellow-400"></i> <strong>Chrome</strong></td><td>80+</td><td class="status-check">✅ Full Support</td></tr>
+                            <tr><td><i class="fab fa-firefox text-orange-400"></i> <strong>Firefox</strong></td><td>75+</td><td class="status-check">✅ Full Support</td></tr>
+                            <tr><td><i class="fab fa-safari text-blue-400"></i> <strong>Safari</strong></td><td>13+</td><td class="status-check">✅ Full Support</td></tr>
+                            <tr><td><i class="fab fa-edge text-cyan-400"></i> <strong>Edge</strong></td><td>80+</td><td class="status-check">✅ Full Support</td></tr>
+                            <tr><td><i class="fab fa-opera text-red-400"></i> <strong>Opera</strong></td><td>67+</td><td class="status-check">✅ Full Support</td></tr>
+                            <tr><td><i class="fab fa-internet-explorer text-gray-400"></i> <strong>IE</strong></td><td>All</td><td class="text-red-400">❌ Not Supported</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Changelog Section -->
+        <section class="py-20 px-6" id="changelog">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="section-title"><span>📝</span> Changelog</h2>
+
+                <details open>
+                    <summary><strong>Version 6.0 (Current)</strong> — 🆕 Major Release</summary>
+                    <div>
+                        <ul class="text-gray-300 space-y-2">
+                            <li>✅ Added 18 card effect styles (Fold, Curved, Torn, Stacked, etc.)</li>
+                            <li>✅ Added JSON Editor for direct paste import</li>
+                            <li>✅ Added copy individual note JSON</li>
+                            <li>✅ Added 4 new color presets (Cream, Slate, Red, Gold)</li>
+                            <li>✅ Added 5 new attachments (Green Pin, Rose Clip, Binder, String)</li>
+                            <li>✅ Added default effect setting</li>
+                            <li>✅ Improved modal responsiveness</li>
+                            <li>✅ Fixed all download issues</li>
+                        </ul>
+                    </div>
+                </details>
+                
+                <details>
+                    <summary><strong>Version 5.0</strong></summary>
+                    <div>
+                        <ul class="text-gray-300 space-y-2">
+                            <li>✅ Fixed modal overlap issues</li>
+                            <li>✅ Fixed download functionality</li>
+                            <li>✅ Added 25+ color presets</li>
+                            <li>✅ Added 12 attachment styles</li>
+                            <li>✅ Added 18 fonts (including Hindi)</li>
+                            <li>✅ Tabbed modal interface</li>
+                        </ul>
+                    </div>
+                </details>
+                
+                <details>
+                    <summary><strong>Version 4.0</strong></summary>
+                    <div>
+                        <ul class="text-gray-300 space-y-2">
+                            <li>Added realistic sticky note effects</li>
+                            <li>Added presets modal</li>
+                            <li>Added settings panel</li>
+                        </ul>
+                    </div>
+                </details>
+                
+                <details>
+                    <summary><strong>Version 1.0 - 3.0</strong></summary>
+                    <div>
+                        <ul class="text-gray-300 space-y-2">
+                            <li>v3.0: Custom card creator, export/import</li>
+                            <li>v2.0: Dark terminal theme, matrix background</li>
+                            <li>v1.0: Initial release, basic text parsing</li>
+                        </ul>
+                    </div>
+                </details>
+            </div>
+        </section>
+
+        <!-- Contributing Section -->
+        <section class="py-20 px-6" id="contributing">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="section-title"><span>🤝</span> Contributing</h2>
+
+                <div class="card p-8 mb-8">
+                    <h3 class="text-xl font-bold text-white mb-6">How to Contribute</h3>
+                    <div class="space-y-4 text-gray-300">
+                        <div class="flex items-center gap-4">
+                            <span class="step-number" style="width: 40px; height: 40px; font-size: 16px;">1</span>
+                            <span><strong>Fork</strong> the repository</span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="step-number" style="width: 40px; height: 40px; font-size: 16px;">2</span>
+                            <span><strong>Create</strong> a feature branch: <code class="bg-gray-800 px-2 py-1 rounded">git checkout -b feature/amazing-feature</code></span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="step-number" style="width: 40px; height: 40px; font-size: 16px;">3</span>
+                            <span><strong>Commit</strong> your changes: <code class="bg-gray-800 px-2 py-1 rounded">git commit -m 'Add amazing feature'</code></span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="step-number" style="width: 40px; height: 40px; font-size: 16px;">4</span>
+                            <span><strong>Push</strong> to the branch: <code class="bg-gray-800 px-2 py-1 rounded">git push origin feature/amazing-feature</code></span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span class="step-number" style="width: 40px; height: 40px; font-size: 16px;">5</span>
+                            <span><strong>Open</strong> a Pull Request</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-8">
+                    <h3 class="text-xl font-bold text-white mb-6">🎯 Contribution Ideas</h3>
+                    <div class="grid md:grid-cols-2 gap-3">
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-gray-500">☐</span> More card effects</div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-gray-500">☐</span> More color presets</div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-gray-500">☐</span> Drag and drop reordering</div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-gray-500">☐</span> PDF/SVG export</div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-gray-500">☐</span> Cloud sync</div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-gray-500">☐</span> Templates gallery</div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-gray-500">☐</span> Animation effects</div>
+                        <div class="flex items-center gap-2 text-gray-300"><span class="text-gray-500">☐</span> Dark/Light theme toggle</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Author Section -->
+        <section class="py-20 px-6" id="author">
+            <div class="max-w-4xl mx-auto">
+                <div class="rainbow-line mb-10"></div>
+                <h2 class="section-title"><span>👨‍💻</span> Author</h2>
+
+                <div class="card p-10 text-center max-w-lg mx-auto">
+                    <div class="w-28 h-28 bg-gradient-to-br from-yellow-500 to-pink-500 rounded-full mx-auto mb-6 flex items-center justify-center text-5xl">
+                        👨‍💻
+                    </div>
+                    <h3 class="text-3xl font-bold text-white mb-2">Sudhir Kumar</h3>
+                    <p class="text-gray-400 mb-6">DevOps Engineer | Full Stack Developer | Open Source Contributor</p>
+                    
+                    <div class="flex justify-center gap-4 mb-8">
+                        <a href="https://github.com/SudhirDevOps1" target="_blank" class="btn-secondary">
+                            <i class="fab fa-github"></i> GitHub
+                        </a>
+                        <a href="https://twitter.com/SudhirDevOps1" target="_blank" class="btn-secondary">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </a>
+                        <a href="https://linkedin.com/in/sudhirkumar" target="_blank" class="btn-secondary">
+                            <i class="fab fa-linkedin"></i> LinkedIn
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- License Section -->
+        <section class="py-20 px-6" id="license">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="section-title"><span>📄</span> License</h2>
+
+                <div class="card p-10">
+                    <p class="text-gray-300 text-xl mb-6">This project is licensed under the <strong class="text-white">MIT License</strong></p>
+                    <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="License" class="mx-auto mb-8"/>
+                    
+                    <div class="code-block text-left font-mono text-sm">
+                        <p class="text-gray-300">MIT License</p>
+                        <p class="text-gray-400 mt-4">Copyright (c) 2024 Sudhir Kumar (@SudhirDevOps1)</p>
+                        <p class="text-gray-400 mt-4">Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction...</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Acknowledgments -->
+        <section class="py-16 px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-2xl font-bold text-white mb-8">🙏 Acknowledgments</h2>
+                
+                <div class="flex flex-wrap justify-center gap-3 mb-8">
+                    <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind"/>
+                    <img src="https://img.shields.io/badge/html2canvas-Screenshot-orange?style=flat-square" alt="html2canvas"/>
+                    <img src="https://img.shields.io/badge/Google_Fonts-Typography-blue?style=flat-square&logo=google&logoColor=white" alt="Google Fonts"/>
+                </div>
+                
+                <table class="styled-table max-w-md mx-auto">
+                    <tbody>
+                        <tr><td><strong>Tailwind CSS</strong></td><td>Utility-first CSS framework</td></tr>
+                        <tr><td><strong>html2canvas</strong></td><td>Screenshot library</td></tr>
+                        <tr><td><strong>Google Fonts</strong></td><td>Beautiful fonts</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Card Effects Gallery -->
+        <section class="py-16 px-6">
+            <div class="max-w-5xl mx-auto text-center">
+                <h2 class="text-2xl font-bold text-white mb-8">🎴 Card Effects Gallery</h2>
+                
+                <div class="grid grid-cols-4 md:grid-cols-8 gap-4">
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">📄</div>
+                        <div class="text-xs text-gray-400">Fold</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">🌊</div>
+                        <div class="text-xs text-gray-400">Curved</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">📃</div>
+                        <div class="text-xs text-gray-400">Torn</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">📚</div>
+                        <div class="text-xs text-gray-400">Stacked</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">📓</div>
+                        <div class="text-xs text-gray-400">Notebook</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">📸</div>
+                        <div class="text-xs text-gray-400">Polaroid</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">✉️</div>
+                        <div class="text-xs text-gray-400">Postcard</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">🎯</div>
+                        <div class="text-xs text-gray-400">3D</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">📋</div>
+                        <div class="text-xs text-gray-400">Taped</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">🎟️</div>
+                        <div class="text-xs text-gray-400">Ticket</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">📮</div>
+                        <div class="text-xs text-gray-400">Stamp</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">📌</div>
+                        <div class="text-xs text-gray-400">Cork</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">🎀</div>
+                        <div class="text-xs text-gray-400">Washi</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">🌈</div>
+                        <div class="text-xs text-gray-400">Gradient</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">⬜</div>
+                        <div class="text-xs text-gray-400">Minimal</div>
+                    </div>
+                    <div class="bg-gray-800 rounded-lg p-3 text-center">
+                        <div class="text-2xl">💡</div>
+                        <div class="text-xs text-gray-400">Neon</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="py-20 px-6 text-center border-t border-gray-800">
+            <div class="rainbow-line max-w-2xl mx-auto mb-12"></div>
+            
+            <h2 class="text-3xl font-bold text-white mb-6">
+                ⭐ Star this repo if you find it useful!
+            </h2>
+            
+            <a href="https://github.com/SudhirDevOps1/sticky-notes-pro" target="_blank" class="btn-primary text-xl animate-pulse-glow">
+                <i class="fas fa-star"></i> Star This Repo
+            </a>
+            
+            <div class="mt-16">
+                <p class="text-xl text-gray-400 mb-4">Made with <span class="text-red-500">❤️</span> by <a href="https://github.com/SudhirDevOps1" class="text-yellow-400 hover:text-yellow-300 font-bold">Sudhir Kumar</a></p>
+            </div>
+            
+            <!-- Footer Wave -->
+            <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=12,14,25&height=120&section=footer&animation=twinkling" class="w-full mt-12" alt="Footer"/>
+        </footer>
+    </main>
+
+    <!-- Back to Top Button -->
+    <button id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script>
+        // Back to top button
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTop.classList.add('visible');
+            } else {
+                backToTop.classList.remove('visible');
+            }
+        });
+        
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        
+        // Copy code functionality
+        function copyCode(btn) {
+            const codeBlock = btn.parentElement;
+            const code = codeBlock.querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = '✓ Copied!';
+                btn.style.background = '#22c55e';
+                setTimeout(() => {
+                    btn.textContent = '📋 Copy';
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+        
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.card, .highlight-card, .effect-card, .sticky-note').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+            observer.observe(el);
+        });
+        
+        // Add random slight rotations to sticky notes
+        document.querySelectorAll('.sticky-note').forEach(note => {
+            const rotation = (Math.random() - 0.5) * 8;
+            note.style.setProperty('--rotation', `${rotation}deg`);
+        });
+    </script>
+</body>
+</html>
